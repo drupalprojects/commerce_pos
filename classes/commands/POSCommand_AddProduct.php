@@ -57,7 +57,11 @@ class POSCommand_AddProduct extends POS_Command {
   }
 
   protected function reParseInput($input) {
-    preg_match('/(?:(\d+)\*)?(\S+)/', $input, $matches);
+    $pattern = '/(?:(\d+)\*)?(\S+)/';
+    if (module_exists('commerce_decimal_quantities')) {
+      $pattern = '/(?:(\d+\.?\d*)\*)?(\S+)/';
+    }
+    preg_match($pattern, $input, $matches);
     return array(
       $matches[2], // SKU
       $matches[1] ? $matches[1] : 1, // Quantity
