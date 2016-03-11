@@ -207,6 +207,28 @@ function commerce_pos_views_api() {
 }
 
 /**
+ * Implements hook_commerce_order_load().
+ *
+ * Allow order refresh on in progress POS orders if enabled.
+ */
+function commerce_pos_commerce_order_load($orders) {
+  // Do not react if this is not enabled.
+  if (!variable_get('commerce_pos_pricing_rules', FALSE)) {
+    return;
+  }
+
+  $refreshed = &drupal_static(__FUNCTION__, array());
+  foreach ($orders as $order) {
+    if (!isset($refreshed[$order->order_id])
+        && CommercePOS::instance()->getState()->getOrder()->order_id == $order->order_id
+        && $order->status == 'pos_in_progress' ) {
+      $refreshed[$order->order_id] = TRUE;
+      commerce_cart_order_refresh($order);
+    }
+  }
+}
+
+/**
  * Determine if the order in question is currently on the global $user's POS.
  *
  * @param $order

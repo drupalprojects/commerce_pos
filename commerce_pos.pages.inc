@@ -113,19 +113,29 @@ function commerce_pos_configuration_form($form, $form_state) {
     '#description' => t('When a payment is added to the order, automatically open the print dialog for a receipt.'),
     '#default_value' => variable_get('commerce_pos_payment_print_receipt', TRUE)
   );
+  
   if(module_exists('barcode')) {
     $options = array();
     module_load_include('inc', 'barcode', 'includes/barcode.plugins');
     $barcode_plugins = barcode_discover_plugins();
+
     foreach($barcode_plugins as $plugin_group) {
       $options += $plugin_group;
     }
+
     $form['commerce_pos_barcode_format'] = array(
       '#type' => 'select',
       '#title' => t('Barcode Format'),
       '#default_value' => variable_get('commerce_pos_barcode_format', 'EAN-13'),
       '#options' => $options,
       '#description' => t('Set the format of barcodes printed on receipts.'),
+    );
+
+    $form['commerce_pos_pricing_rules'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable pricing rules on in progress orders'),
+      '#description' => t('Allows for discounts and taxes to work for in progress orders.'),
+      '#default_value' => variable_get('commerce_pos_pricing_rules', FALSE)
     );
   }
 
