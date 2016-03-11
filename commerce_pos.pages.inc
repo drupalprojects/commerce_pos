@@ -107,6 +107,12 @@ function commerce_pos_configuration_form($form, $form_state) {
     '#description' => t('Displays the keypad and submit button for easier touch-screen use.'),
     '#default_value' => variable_get('commerce_pos_touchscreen_mode', FALSE)
   );
+  $form['commerce_pos_payment_print_receipt'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Print receipt after payment'),
+    '#description' => t('When a payment is added to the order, automatically open the print dialog for a receipt.'),
+    '#default_value' => variable_get('commerce_pos_payment_print_receipt', TRUE)
+  );
   if(module_exists('barcode')) {
     $options = array();
     module_load_include('inc', 'barcode', 'includes/barcode.plugins');

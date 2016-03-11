@@ -190,7 +190,9 @@ function commerce_pos_form_commerce_payment_order_transaction_add_form_submit($f
   $form_state['redirect'] = array('admin/commerce/pos');
   //Print a receipt by invoking the RP command.  This allows replacement of
   // the entire receipt printing mechanism by changing this command.
-  CommercePOS::instance()->executeCommand('RP');
+  if (variable_get('commerce_pos_payment_print_receipt', TRUE)) {
+    CommercePOS::instance()->executeCommand('RP');
+  }
 }
 
 /**
