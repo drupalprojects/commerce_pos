@@ -56,7 +56,7 @@
 
                 $button.click(function(e) {
                     if(Drupal.POS.instance) {
-                        if (pattern = $(this).data('pos-input')) {
+                        if (pattern = $(this).attr('data-pos-input')) {
                             Drupal.POS.instance.replacePattern(pattern);
                             if ($(this).data('pos-submit')) {
                                 Drupal.POS.instance.submit();
@@ -82,7 +82,7 @@
                         .change(function(e) {
                             var command = $qty.val() + '*' + original_input;
                             $button.querystring('href', {command: command});
-                            $button.data('pos-input', command);
+                            $button.attr('data-pos-input', command);
                         });
                 }
             });
