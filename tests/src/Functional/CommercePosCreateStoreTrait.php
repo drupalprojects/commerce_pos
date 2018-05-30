@@ -159,7 +159,7 @@ trait CommercePosCreateStoreTrait {
     $this->register = $register;
 
     // We need to run the index so these items can be searched.
-    $index = Index::load('commerce_pos');
+    $index = Index::load('pos');
     $index->indexItems();
 
     return $test_store;
