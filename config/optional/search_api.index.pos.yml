@@ -5,10 +5,11 @@ dependencies:
     - field.storage.commerce_product_variation.field_upc
     - field.storage.commerce_product.body
     - field.storage.commerce_product.stores
-    - search_api.server.pos_server
+    - search_api.server.pos
   module:
     - commerce_product
     - search_api_db
+    - search_api
 id: pos
 name: 'Commerce POS'
 description: 'Basic POS index created by the Commerce POS module'
@@ -151,4 +152,4 @@ tracker_settings:
 options:
   index_directly: true
   cron_limit: 50
-server: database
+server: pos

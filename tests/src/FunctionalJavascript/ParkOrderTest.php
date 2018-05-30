@@ -83,7 +83,6 @@ class ParkOrderTest extends JavascriptTestBase {
     $this->getSession()->getDriver()->keyDown($autocomplete_field->getXpath(), 'L');
     $web_assert->waitOnAutocomplete();
     $results = $this->getSession()->getPage()->findAll('css', '.ui-autocomplete li');
-    $this->createScreenshot(\Drupal::root() . '/sites/default/files/simpletest/screen.jpg');
 
     $this->assertCount(1, $results);
     // Click on of the auto-complete.
@@ -131,6 +130,7 @@ class ParkOrderTest extends JavascriptTestBase {
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->click('#edit-keypad-add');
     $web_assert->waitForButton('commerce-pos-finish');
+
     $this->click('input[name="commerce-pos-finish"]');
     $this->drupalGet(Url::fromRoute('commerce_pos.main', ['commerce_order' => 1]));
     $web_assert->buttonNotExists('Park Order');

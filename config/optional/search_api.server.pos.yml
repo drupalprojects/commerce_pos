@@ -4,7 +4,7 @@ dependencies:
   module:
     - search_api_db
 id: pos
-name: Database
+name: Pos
 description: ''
 backend: search_api_db
 backend_config:

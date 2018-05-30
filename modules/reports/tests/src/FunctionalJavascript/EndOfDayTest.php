@@ -157,8 +157,7 @@ class EndOfDayTest extends JavascriptTestBase {
       ['pos_gift_card' => '16.99'],
     ];
     $currency_code = 'USD';
-    $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-    $number_formatter = $number_formatter_factory->createInstance();
+    $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
     $currency = Currency::load($currency_code);
 
     foreach ($payment_methods as $payment_method) {
@@ -206,7 +205,7 @@ class EndOfDayTest extends JavascriptTestBase {
 
       $amount_total = isset($transaction_summary[$payment_method_id]['amount_total']) ? $transaction_summary[$payment_method_id]['amount_total'] + (float) $amount : (float) $amount;
       $transaction_summary[$payment_method_id]['amount_total'] = $amount_total;
-      $transaction_summary[$payment_method_id]['amount_total_formatted'] = $number_formatter->formatCurrency($amount_total, $currency);
+      $transaction_summary[$payment_method_id]['amount_total_formatted'] = $currency_formatter->format((string) $amount_total, $currency);
       $transaction_summary[$payment_method_id]['orders'][$order->id()] = $payment;
     }
 

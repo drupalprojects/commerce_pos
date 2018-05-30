@@ -617,8 +617,7 @@ class POSForm extends ContentEntityForm {
       '#type' => 'container',
     ];
 
-    $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-    $number_formatter = $number_formatter_factory->createInstance();
+    $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
 
     $order_total_summary = \Drupal::service('commerce_order.order_total_summary');
     $order_summary = $order_total_summary->buildTotals($order);
@@ -633,21 +632,18 @@ class POSForm extends ContentEntityForm {
     }
 
     $sub_total_price = $order_summary['subtotal'];
-    $currency = Currency::load($sub_total_price->getCurrencyCode());
-    $formatted_amount = $number_formatter->formatCurrency($sub_total_price->getNumber(), $currency);
+    $formatted_amount = $currency_formatter->format($sub_total_price->getNumber(), $sub_total_price->getCurrencyCode());
     $totals[] = [$this->t('Subtotal'), $formatted_amount];
 
     foreach ($order_summary['adjustments'] as $adjustment) {
       if (!empty($adjustment['total'])) {
-        $currency = Currency::load($adjustment['total']->getCurrencyCode());
-        $formatted_amount = $number_formatter->formatCurrency($adjustment['total']->getNumber(), $currency);
+        $formatted_amount = $currency_formatter->format($adjustment['total']->getNumber(), $adjustment['total']->getCurrencyCode());
         $totals[] = [$adjustment['label'], $formatted_amount];
       }
     }
 
     $total_price = $order_summary['total'];
-    $currency = Currency::load($total_price->getCurrencyCode());
-    $formatted_amount = $number_formatter->formatCurrency($total_price->getNumber(), $currency);
+    $formatted_amount = $currency_formatter->format($total_price->getNumber(), $total_price->getCurrencyCode());
     $totals[] = [$this->t('Total'), $formatted_amount];
 
     $form['totals']['totals'] = [
@@ -662,7 +658,7 @@ class POSForm extends ContentEntityForm {
     ];
     foreach ($this->getOrderPayments() as $payment) {
       $amount = $payment->getAmount();
-      $rendered_amount = $payment->getState()->value === 'voided' ? $this->t('VOID') : $number_formatter->formatCurrency($amount->getNumber(), Currency::load($amount->getCurrencyCode()));
+      $rendered_amount = $payment->getState()->value === 'voided' ? $this->t('VOID') : $currency_formatter->format($amount->getNumber(), $amount->getCurrencyCode());
       $remove_button = [
         '#type' => 'submit',
         '#value' => $this->t('void'),
@@ -709,17 +705,16 @@ class POSForm extends ContentEntityForm {
     foreach ($payment_totals as $currency_code => $amount) {
       $balances[] = [
         $this->t('Total Paid'),
-        $number_formatter->formatCurrency($amount, Currency::load($currency_code)),
+        $currency_formatter->format((string) $amount, $currency_code),
       ];
     }
     $remaining_balance = $this->getOrderBalance();
 
-    $currency = Currency::load($remaining_balance->getCurrencyCode());
     $to_pay = $remaining_balance->getNumber();
     if ($to_pay < 0) {
       $to_pay = 0;
     }
-    $formatted_amount = $number_formatter->formatCurrency($to_pay, $currency);
+    $formatted_amount = $currency_formatter->format($to_pay, $remaining_balance->getCurrencyCode());
     $balances[] = [
       'class' => 'commerce-pos--totals--to-pay',
       'data' => [$this->t('To Pay'), $formatted_amount],
@@ -729,7 +724,7 @@ class POSForm extends ContentEntityForm {
     if ($change < 0) {
       $change = 0;
     }
-    $formatted_change_amount = $number_formatter->formatCurrency($change, $currency);
+    $formatted_change_amount = $currency_formatter->format($change, $remaining_balance->getCurrencyCode());
     $balances[] = [
       'class' => [
         'commerce-pos--totals--to-pay',

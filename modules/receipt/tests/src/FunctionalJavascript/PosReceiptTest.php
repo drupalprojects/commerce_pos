@@ -67,10 +67,13 @@ class PosReceiptTest extends JavascriptTestBase {
     // Go to the payment page.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('totals[print_email_receipt]', 'none');
+    $web_assert->waitForButton('commerce-pos-finish');
     $this->click('input[name="commerce-pos-finish"]');
 
     // We now have a complete order and new draft order.
     $this->drupalGet('admin/commerce/orders');
+
     // The first row has a Show receipt action and the second does not.
     $web_assert->elementContains('xpath', '//table[contains(@class, "views-view-table")]/tbody/tr[1]', 'Show receipt');
     $web_assert->elementNotContains('xpath', '//table[contains(@class, "views-view-table")]/tbody/tr[2]', 'Show receipt');
