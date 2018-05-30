@@ -9,7 +9,7 @@ dependencies:
   module:
     - commerce_product
     - search_api_db
-id: commerce_pos
+id: pos
 name: 'Commerce POS'
 description: 'Basic POS index created by the Commerce POS module'
 read_only: false
