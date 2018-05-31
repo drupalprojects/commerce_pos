@@ -7,10 +7,7 @@
     attach: function (context, settings) {
       $('input.form-autocomplete').keypress(function (event) {
         if (event.which == 13) {
-          var autocomplete_results = $('.commerce-pos-autocomplete-results');
-          if (typeof autocomplete_results[0] != 'undefined') {
-            autocomplete_results[0].click();
-          }
+          $(this).trigger("autocompleteclose");
         }
 
       });

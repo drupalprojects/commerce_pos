@@ -9,43 +9,59 @@ var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
-var gutil = require('gulp-util');
+var del = require('del');
 
-var config = {
-  'sassDirectories': [
+var paths = {
+  'styles': [
     { src: './modules/label/sass/labels/*.scss', dest: './modules/label/css/labels'},
-    { src: './modules/label/sass/*.scss', dest: './modules/label/css'},
+    { src: './modules/label/sass/**/*.scss', dest: './modules/label/css'},
     { src: './modules/keypad/sass/**/*.scss', dest: './modules/keypad/css'},
     { src: './modules/reports/sass/**/*.scss', dest: './modules/reports/css'},
+    { src: './modules/barcode_scanning/sass/**/*.scss', dest: './modules/barcode_scanning/css'},
     { src: './sass/**/*.scss', dest: './css' }
   ]
 };
 
-gulp.task('sass', function () {
-  config.sassDirectories.map(function (dirInfo) {
-    gulp.src(dirInfo.src)
-      .pipe(sourcemaps.init())
-      .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-      .pipe(postcss([
-        autoprefixer({
-          browsers: ['> 5%']
-        }),
-      ]))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(dirInfo.dest))
-  });
-});
+function clean() {
+  return del([' assets' ]);
+}
 
-gulp.task('sass:watch', function () {
-  config.sassDirectories.map(function (dirInfo) {
-    gulp.watch(dirInfo.src, ['sass']);
-  });
-});
+function styles() {
+    var results = true;
 
-gulp.task('build', function () {
-  gulp.start(['sass']);
-});
+    paths.styles.map(function (dirInfo) {
+        var result = gulp.src(dirInfo.src)
+            .pipe(sourcemaps.init())
+            .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+            .pipe(postcss([
+                autoprefixer({
+                    browsers: ['> 5%']
+                }),
+            ]))
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(dirInfo.dest));
 
-gulp.task('watch', function () {
-  gulp.start(['sass:watch']);
-});
+        if(result !== true) {
+            results = result;
+        }
+    });
+
+    return results;
+}
+
+function build() {
+  gulp.series(clean, styles);
+}
+
+function watch() {
+    paths.styles.map(function (dirInfo) {
+        gulp.watch(dirInfo.src, styles);
+    });
+}
+
+exports.clean = clean;
+exports.styles = styles;
+exports.build = build;
+exports.watch = watch;
+
+gulp.task('default', build);

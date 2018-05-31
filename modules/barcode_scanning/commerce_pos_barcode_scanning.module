@@ -1,0 +1,24 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for form changing.
+ */
+function commerce_pos_barcode_scanning_form_commerce_pos_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_state->get('step') == 'order') {
+    $form['#attached']['library'][] = 'commerce_pos_barcode_scanning/quagga';
+    $form['#attached']['library'][] = 'commerce_pos_barcode_scanning/form';
+
+    $config = \Drupal::configFactory()->getEditable('commerce_pos_barcode_scanning.settings');
+
+    $form['#attached']['drupalSettings']['commerce_pos_barcode_scanning'] = [
+      'statusOnLoad' => $config->get('status_on_load'),
+      'closeAfterScanning' => $config->get('close_after_scanning'),
+      'delay' => $config->get('delay'),
+    ];
+
+    $form['order_items']['widget']['target_id']['product_selector']['#suffix'] =
+      '<span id="scanner-toggle"></span>';
+  }
+}
