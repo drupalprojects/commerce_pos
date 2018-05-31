@@ -237,11 +237,15 @@ function commerce_pos_reports_get_totals($date_filter, $register_id) {
  * Get the available payment options. @see CommercePOSSettingsForm.
  */
 function commerce_pos_reports_get_payment_gateway_options() {
-  // TODO: This should be dynamic.
-  return [
-    'pos_cash' => t('Cash'),
-    'pos_credit' => t('Credit'),
-    'pos_debit' => t('Debit'),
-    'pos_gift_card' => t('Gift Card'),
-  ];
+  /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface[] $payment_gateway_entities */
+  $payment_gateway_entities = \Drupal::service('entity_type.manager')->getStorage('commerce_payment_gateway')->loadMultiple();
+  $payment_gateways = array();
+
+  foreach ($payment_gateway_entities as $payment_gateway_entity) {
+    if ($payment_gateway_entity->status()) {
+      $payment_gateways[$payment_gateway_entity->id()] = $payment_gateway_entity->label();
+    }
+  }
+
+  return $payment_gateways;
 }
