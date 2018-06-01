@@ -224,6 +224,7 @@ class PosFormTest extends JavascriptTestBase {
 
     $this->getSession()->getPage()->fillField('keypad[amount]', '80');
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+
     $web_assert->pageTextContains('Total $119.60');
     $web_assert->pageTextContains('Cash $50.00');
     $web_assert->pageTextContains('Cash VOID');

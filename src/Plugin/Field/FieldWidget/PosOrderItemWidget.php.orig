@@ -261,13 +261,21 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     $view_builder = $this->entityTypeManager->getViewBuilder($order_item->getEntityTypeId());
     $product_render = $view_builder->view($product, $this->getSetting('purchasable_entity_view_mode'), $order_item->language()
       ->getId());
+<<<<<<< ours
+=======
+
     $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
+
+    $unit_price = $order_item->getUnitPrice();
+
+>>>>>>> theirs
     $form = [
       'purchasable_entity' => [
         '#type' => 'markup',
         '#markup' => \Drupal::service('renderer')->render($product_render),
       ],
       'unit_price' => [
+<<<<<<< ours
         '#type' => 'commerce_price',
         '#title' => $this->t('Unit price'),
         '#title_display' => 'invisible',
@@ -289,17 +297,69 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
         '#title_display' => 'invisible',
         '#type' => 'number',
         '#default_value' => $order_item->getQuantity(),
-          '#attributes' => [
-            'class' => [
-              'commerce-pos-order-item-quantity',
-            ],
+        '#attributes' => [
+          'class' => [
+            'commerce-pos-order-item-quantity',
           ],
+        ],
         '#ajax' => [
           'callback' => [$this, 'ajaxRefresh'],
           'wrapper' => $wrapper_id,
           'event' => 'change',
           'progress' => [
             'message' => '',
+=======
+        'unit_price' => [
+          '#type' => 'commerce_price',
+          '#title' => $this->t('Unit price'),
+          '#title_display' => 'invisible',
+          '#name' => 'update_unit_price_' . $product->id(),
+          '#default_value' => $unit_price->toArray(),
+          '#allow_negative' => TRUE,
+          '#order_item_id' => $order_item->id(),
+          '#ajax' => [
+            'callback' => [$this, 'ajaxRefresh'],
+            'wrapper' => $wrapper_id,
+            'event' => 'change',
+            'progress' => [
+              'message' => '',
+            ],
+          ],
+        ],
+        'unit_price_hidden' => [
+          '#type' => 'hidden',
+          '#value' => $currency_formatter->format($unit_price->getNumber(), $unit_price->getCurrencyCode()),
+          '#attributes' => [
+            'class' => 'commerce-pos-customer-display-unit-price-hidden',
+          ],
+        ],
+        'item_total_price_hidden' => [
+          '#type' => 'hidden',
+          '#value' => $currency_formatter->format($order_item->getTotalPrice()->getNumber(), $unit_price->getCurrencyCode()),
+          '#attributes' => [
+            'class' => 'commerce-pos-customer-display-item-total-price-hidden',
+          ],
+        ]
+      ],
+      'quantity' => [
+        'quantity' => [
+          '#title' => $this->t('Quantity'),
+          '#title_display' => 'invisible',
+          '#type' => 'number',
+          '#default_value' => $order_item->getQuantity(),
+          '#attributes' => [
+            'class' => [
+              'commerce-pos-order-item-quantity',
+            ],
+          ],
+          '#ajax' => [
+            'callback' => [$this, 'ajaxRefresh'],
+            'wrapper' => $wrapper_id,
+            'event' => 'change',
+            'progress' => [
+              'message' => '',
+            ],
+>>>>>>> theirs
           ],
         ],
         '#order_item_id' => $order_item->id(),

@@ -70,6 +70,7 @@ class PosReceiptTest extends JavascriptTestBase {
     $this->getSession()->getPage()->fillField('totals[print_email_receipt]', 'none');
     $web_assert->waitForButton('commerce-pos-finish');
     $this->click('input[name="commerce-pos-finish"]');
+    $web_assert->waitForElement('css', '#edit-order-items-wrapper');
 
     // We now have a complete order and new draft order.
     $this->drupalGet('admin/commerce/orders');

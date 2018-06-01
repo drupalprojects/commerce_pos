@@ -187,15 +187,12 @@ function commerce_pos_reports_get_totals($date_filter, $register_id) {
     $transaction_counts[$id] = 0;
   }
 
-  $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-  $number_formatter = $number_formatter_factory->createInstance();
+  $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
+
   foreach ($query->execute() as $row) {
     if (!isset($totals[$row->total_price__currency_code][$row->payment_gateway])) {
       continue;
     }
-
-    /** @var \Drupal\commerce_price\Entity\Currency $currency */
-    $currency = Currency::load($row->total_price__currency_code);
 
     if ($row->state == COMMERCE_POS_PAYMENT_STATUS_SUCCESS) {
       $method = &$totals[$row->total_price__currency_code][$row->payment_gateway];
@@ -225,7 +222,7 @@ function commerce_pos_reports_get_totals($date_filter, $register_id) {
       'completed_date_formatted' => date('g:i:s a', $row->completed),
       'cashier' => $cashier_name,
       'amount' => $row->amount__number,
-      'amount_currency_formatted' => $number_formatter->formatCurrency($row->amount__number, $currency),
+      'amount_currency_formatted' => $currency_formatter->format((string) $row->amount__number, $row->total_price__currency_code),
       'status' => 'completed',
     ];
   }

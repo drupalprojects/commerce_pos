@@ -64,13 +64,10 @@ class PrintController extends ControllerBase {
    * A controller callback.
    */
   public function showReceipt(OrderInterface $commerce_order) {
-
-    $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-    $number_formatter = $number_formatter_factory->createInstance();
+    $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
 
     $sub_total_price = $commerce_order->getSubtotalPrice();
-    $currency = Currency::load($sub_total_price->getCurrencyCode());
-    $formatted_amount = $number_formatter->formatCurrency($sub_total_price->getNumber(), $currency);
+    $formatted_amount = $currency_formatter->format($sub_total_price->getNumber(), $sub_total_price->getCurrencyCode());
 
     // In the future add a setting to display group or individual for same skus.
     $has_return_items = FALSE;
@@ -78,7 +75,7 @@ class PrintController extends ControllerBase {
     foreach ($items as $item) {
       $totals[] = [
         $item->getTitle() . ' (' . $item->getQuantity() . ')',
-        $number_formatter->formatCurrency($item->getAdjustedTotalPrice()->getNumber(), $currency),
+        $currency_formatter->format($item->getAdjustedTotalPrice()->getNumber(), $sub_total_price->getCurrencyCode()),
       ];
 
       // Set a flag if we have return item types.
@@ -94,8 +91,7 @@ class PrintController extends ControllerBase {
     foreach ($commerce_order->collectAdjustments() as $key => $adjustment) {
       if (!empty($adjustment)) {
         $amount = $adjustment->getAmount();
-        $currency = Currency::load($amount->getCurrencyCode());
-        $formatted_amount = $number_formatter->formatCurrency($amount->getNumber(), $currency);
+        $formatted_amount = $currency_formatter->format($amount->getNumber(), $amount->getCurrencyCode());
 
         $totals[] = [
           $adjustment->getLabel(),
@@ -106,7 +102,7 @@ class PrintController extends ControllerBase {
 
     // Collecting the total price on the cart.
     $total_price = $commerce_order->getTotalPrice();
-    $formatted_amount = $number_formatter->formatCurrency($total_price->getNumber(), $currency);
+    $formatted_amount = $currency_formatter->format($total_price->getNumber(), $total_price->getCurrencyCode());
     $totals[] = ['Total', $formatted_amount];
 
     $payment_storage = \Drupal::entityTypeManager()->getStorage('commerce_payment');

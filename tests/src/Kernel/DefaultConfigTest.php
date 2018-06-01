@@ -131,6 +131,13 @@ class DefaultConfigTest extends KernelTestBase {
     $active_config_storage = $this->container->get('config.storage');
 
     foreach ($default_config_storage->listAll() as $config_name) {
+      // Index has a requirement of search_api_db even though it only depends on
+      // search_api, its dependency needs search_api_db and drupal doesn't chain
+      // the dependencies correctly.
+      if ($config_name == 'search_api.index.pos') {
+        continue;
+      }
+
       if ($active_config_storage->exists($config_name)) {
         // If it is a config entity re-save it. This ensures that any
         // recalculation of dependencies does not cause config change.

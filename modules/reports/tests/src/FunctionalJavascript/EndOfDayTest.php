@@ -158,7 +158,6 @@ class EndOfDayTest extends JavascriptTestBase {
     ];
     $currency_code = 'USD';
     $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
-    $currency = Currency::load($currency_code);
 
     foreach ($payment_methods as $payment_method) {
       $payment_method_id = key($payment_method);
@@ -205,7 +204,7 @@ class EndOfDayTest extends JavascriptTestBase {
 
       $amount_total = isset($transaction_summary[$payment_method_id]['amount_total']) ? $transaction_summary[$payment_method_id]['amount_total'] + (float) $amount : (float) $amount;
       $transaction_summary[$payment_method_id]['amount_total'] = $amount_total;
-      $transaction_summary[$payment_method_id]['amount_total_formatted'] = $currency_formatter->format((string) $amount_total, $currency);
+      $transaction_summary[$payment_method_id]['amount_total_formatted'] = $currency_formatter->format((string) $amount_total, $currency_code);
       $transaction_summary[$payment_method_id]['orders'][$order->id()] = $payment;
     }
 

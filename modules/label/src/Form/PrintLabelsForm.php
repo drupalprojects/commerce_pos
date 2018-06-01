@@ -4,6 +4,7 @@ namespace Drupal\commerce_pos_label\Form;
 
 use Drupal\commerce_pos\UPC;
 use Drupal\commerce_pos_label\Ajax\PrintLabelsCommand;
+use Drupal\commerce_price\CurrencyFormatter;
 use Drupal\commerce_price\NumberFormatterFactoryInterface;
 use Drupal\commerce_price\RounderInterface;
 use Drupal\commerce_product\Entity\ProductVariationInterface;
@@ -52,9 +53,9 @@ class PrintLabelsForm extends FormBase {
   /**
    * A number formatter for currencies.
    *
-   * @var \CommerceGuys\Intl\Formatter\NumberFormatterInterface
+   * @var \Drupal\commerce_price\CurrencyFormatter
    */
-  protected $formatter;
+  protected $currencyFormatter;
 
   /**
    * A service for looking up product UPCs.
@@ -79,7 +80,7 @@ class PrintLabelsForm extends FormBase {
    *   The rendering service.
    * @param \Drupal\commerce_price\RounderInterface $rounder
    *   A rounding services for prices.
-   * @param \Drupal\commerce_price\NumberFormatterFactoryInterface $formatterFactory
+   * @param \Drupal\commerce_price\CurrencyFormatter $formatter
    *   A factory for creating price formatters.
    * @param \Drupal\commerce_pos\UPC $upc
    *   The UPC object to use to print out the barcode on the label.
@@ -87,12 +88,12 @@ class PrintLabelsForm extends FormBase {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    *   If unable to get the storage for product variations.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer, RounderInterface $rounder, NumberFormatterFactoryInterface $formatterFactory, UPC $upc) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer, RounderInterface $rounder, CurrencyFormatter $formatter, UPC $upc) {
     $this->productVariationStorage = $entityTypeManager->getStorage('commerce_product_variation');
     $this->currencyStorage = $entityTypeManager->getStorage('commerce_currency');
     $this->renderer = $renderer;
     $this->rounder = $rounder;
-    $this->formatter = $formatterFactory->createInstance();
+    $this->currencyFormatter = $formatter;
     $this->upc = $upc;
   }
 
@@ -104,7 +105,7 @@ class PrintLabelsForm extends FormBase {
       $container->get('entity_type.manager'),
       $container->get('renderer'),
       $container->get('commerce_price.rounder'),
-      $container->get('commerce_price.number_formatter_factory'),
+      $container->get('commerce_price.currency_formatter'),
       $container->get('commerce_pos.upc')
     );
   }
@@ -371,13 +372,11 @@ class PrintLabelsForm extends FormBase {
    */
   protected function buildInfoArray(ProductVariationInterface $product_variation) {
     $price = $product_variation->getPrice();
-    /** @var \Drupal\commerce_price\Entity\Currency $currency */
-    $currency = $this->currencyStorage->load($price->getCurrencyCode());
 
     return [
       'title' => $product_variation->getSku(),
       'quantity' => 1,
-      'price' => $this->formatter->formatCurrency($this->rounder->round($price)->getNumber(), $currency),
+      'price' => $this->currencyFormatter->format($this->rounder->round($price)->getNumber(), $price->getCurrencyCode()),
       'description' => $product_variation->getTitle(),
     ];
   }

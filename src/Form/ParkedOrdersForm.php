@@ -77,8 +77,7 @@ class ParkedOrdersForm extends OrderLookupForm {
    * {@inheritdoc}
    */
   public function buildOrderTable(array $orders) {
-    $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-    $number_formatter = $number_formatter_factory->createInstance();
+    $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
 
     $header = [
       t('Order ID'),
@@ -138,11 +137,10 @@ class ParkedOrdersForm extends OrderLookupForm {
       $default_currency = $store->getDefaultCurrency();
       $total_price = $order->getTotalPrice();
       if (!empty($total_price)) {
-        $currency = Currency::load($total_price->getCurrencyCode());
-        $formatted_amount = $number_formatter->formatCurrency($total_price->getNumber(), $currency);
+        $formatted_amount = $currency_formatter->format($total_price->getNumber(), $total_price->getCurrencyCode());
       }
       else {
-        $formatted_amount = $number_formatter->formatCurrency(0, $default_currency);
+        $formatted_amount = $currency_formatter->format("0", $default_currency->getCurrencyCode());
       }
 
       // Add each row to the rows array.

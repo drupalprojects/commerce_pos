@@ -66,8 +66,7 @@ function template_preprocess_commerce_pos_reports_receipt(&$variables) {
 
   // Populate the arrays with the POS Payment methods.
   $pos_methods = commerce_pos_reports_get_payment_gateway_options();
-  $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-  $number_formatter = $number_formatter_factory->createInstance();
+  $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
 
   $variables['rows'] = [];
 
@@ -77,9 +76,6 @@ function template_preprocess_commerce_pos_reports_receipt(&$variables) {
 
       // Determine if this is a cash payment method.
       $is_cash = $payment_method_id == 'pos_cash';
-
-      /** @var \Drupal\commerce_price\Entity\Currency $currency */
-      $currency = Currency::load($currency_code);
 
       $expected_amount = $amounts;
 
@@ -92,11 +88,11 @@ function template_preprocess_commerce_pos_reports_receipt(&$variables) {
 
       $row['title'] = $pos_methods[$payment_method_id];
       $row['total_transactions'] = $transaction_counts[$payment_method_id];
-      $row['declared'] = $number_formatter->formatCurrency($declared, $currency);
-      $row['expected'] = $number_formatter->formatCurrency($expected_amount, $currency);
-      $row['over_short'] = $number_formatter->formatCurrency(($declared - $expected_amount), $currency);
+      $row['declared'] = $currency_formatter->format((string) $declared, $currency_code);
+      $row['expected'] = $currency_formatter->format((string) $expected_amount, $currency_code);
+      $row['over_short'] = $currency_formatter->format((string) ($declared - $expected_amount), $currency_code);
       if (isset($results['data'][$payment_method_id]['cash_deposit']) && !empty($results['data'][$payment_method_id]['cash_deposit'])) {
-        $row['cash_deposit'] = $number_formatter->formatCurrency($results['data'][$payment_method_id]['cash_deposit'], $currency);
+        $row['cash_deposit'] = $currency_formatter->format((string) $results['data'][$payment_method_id]['cash_deposit'], $currency_code);
       }
 
       $row['transaction_summary'] = $transaction_summary[$payment_method_id];

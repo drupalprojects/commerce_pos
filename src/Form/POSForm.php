@@ -267,9 +267,8 @@ class POSForm extends ContentEntityForm {
     if (!empty($triggering_element['#payment_option_id']) && !$balance_paid) {
       $option_id = $triggering_element['#payment_option_id'];
 
-      $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-      $number_formatter = $number_formatter_factory->createInstance();
-      $order_balance_amount_format = $number_formatter->formatCurrency($order_balance->getNumber(), Currency::load($order_balance->getCurrencyCode()));
+      $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
+      $order_balance_amount_format = $currency_formatter->format($order_balance->getNumber(), $order_balance->getCurrencyCode());
       $keypad_amount = preg_replace('/[^0-9\.,]/', '', $order_balance_amount_format);
       // Fetching fraction digit to set as step.
       $fraction_digits = $this->currentStore->getStore()
@@ -712,7 +711,7 @@ class POSForm extends ContentEntityForm {
 
     $to_pay = $remaining_balance->getNumber();
     if ($to_pay < 0) {
-      $to_pay = 0;
+      $to_pay = '0';
     }
     $formatted_amount = $currency_formatter->format($to_pay, $remaining_balance->getCurrencyCode());
     $balances[] = [
@@ -722,9 +721,9 @@ class POSForm extends ContentEntityForm {
 
     $change = -$remaining_balance->getNumber();
     if ($change < 0) {
-      $change = 0;
+      $change = '0';
     }
-    $formatted_change_amount = $currency_formatter->format($change, $remaining_balance->getCurrencyCode());
+    $formatted_change_amount = $currency_formatter->format((string) $change, $remaining_balance->getCurrencyCode());
     $balances[] = [
       'class' => [
         'commerce-pos--totals--to-pay',

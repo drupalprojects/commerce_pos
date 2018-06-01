@@ -139,8 +139,7 @@ class EndOfDayForm extends FormBase {
         list($totals, $transaction_counts) = commerce_pos_reports_get_totals($date_filter, $register_id);
 
         $payment_gateway_options = commerce_pos_reports_get_payment_gateway_options();
-        $number_formatter_factory = \Drupal::service('commerce_price.number_formatter_factory');
-        $number_formatter = $number_formatter_factory->createInstance();
+        $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
 
         // Display a textfield to enter the amounts for each currency type and
         // payment method.
@@ -217,7 +216,7 @@ class EndOfDayForm extends FormBase {
             // Expected amount.
             $row[] = [
               '#markup' => '<div class="commerce-pos-report-expected-amount" data-payment-method-id="' . $payment_method_id . '">'
-              . $number_formatter->formatCurrency($expected_amount, $currency)
+              . $currency_formatter->format((string) $expected_amount, $currency_code)
               . '</div>',
             ];
 
@@ -225,7 +224,9 @@ class EndOfDayForm extends FormBase {
             $over_short_amount = $report_history['data'][$payment_method_id]['declared'] - $expected_amount;
             $row[] = [
               '#markup' => '<div class="commerce-pos-report-balance" data-payment-method-id="' . $payment_method_id . '">'
-              . ($over_short_amount > -1 ? $number_formatter->formatCurrency($over_short_amount, $currency) : '<span class="commerce-pos-report-balance commerce-pos-report-negative">(' . $number_formatter->formatCurrency(abs($over_short_amount), $currency) . ')</span>')
+              . ($over_short_amount > -1 ? $currency_formatter->format((string) $over_short_amount, $currency_code)
+                : '<span class="commerce-pos-report-balance commerce-pos-report-negative">(' .
+                  $currency_formatter->format((string) abs($over_short_amount), $currency_code) . ')</span>')
               . '</div>',
             ];
 
