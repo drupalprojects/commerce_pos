@@ -2,7 +2,6 @@
 
 namespace Drupal\commerce_pos\Form;
 
-use Drupal\commerce_price\Entity\Currency;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Datetime\DrupalDateTime;

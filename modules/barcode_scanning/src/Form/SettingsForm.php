@@ -41,7 +41,7 @@ class SettingsForm extends ConfigFormBase {
       '#options' => [
         'open' => $this->t('Open'),
         'closed' => $this->t('Closed'),
-      ]
+      ],
     ];
 
     $form['close_after_scanning'] = [
@@ -53,7 +53,7 @@ class SettingsForm extends ConfigFormBase {
       '#options' => [
         'open' => $this->t('Leave open'),
         'closed' => $this->t('Close'),
-      ]
+      ],
     ];
 
     $form['delay'] = [

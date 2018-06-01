@@ -7,7 +7,6 @@
 
 use Drupal\Core\Render\Element;
 use Drupal\commerce_pos\Entity\Register;
-use Drupal\commerce_price\Entity\Currency;
 
 /**
  * @file

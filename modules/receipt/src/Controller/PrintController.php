@@ -5,7 +5,6 @@ namespace Drupal\commerce_pos_receipt\Controller;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\commerce_pos_receipt\Ajax\CompleteOrderCommand;
 use Drupal\commerce_pos_receipt\Ajax\PrintReceiptCommand;
-use Drupal\commerce_price\Entity\Currency;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;

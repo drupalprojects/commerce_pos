@@ -11,7 +11,6 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\commerce_price\Entity\Currency;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;

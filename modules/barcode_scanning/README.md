@@ -10,8 +10,8 @@ but all modern versions of Chrome, Firefox, Edge, Opera and Safari will.
 
 Most browsers will only allow you to access the camera over a secure connection,
 so you will need to run your site via https, even for development environments
-unless they are hosted on localhost. Some browsers, like Firefox, will allow you to
-override this, but you have to do so on every page load.
+unless they are hosted on localhost. Some browsers, like Firefox, will allow you 
+to override this, but you have to do so on every page load.
 
 INSTALLATION
 ------------
@@ -30,7 +30,9 @@ You may have to make the libraries folder manually.
 
 ##### adapter #####
 
-This library assists in compatability with the webRTC spec and is required by quaggaJS
+This library assists in compatability with the webRTC spec and is required
+ by quaggaJS
 
-1. Download the most recent file from github: https://webrtc.github.io/adapter/adapter-latest.js
+1. Download the most recent file from github: 
+https://webrtc.github.io/adapter/adapter-latest.js
 2. Copy it to: `webroot/libraries/adapter`

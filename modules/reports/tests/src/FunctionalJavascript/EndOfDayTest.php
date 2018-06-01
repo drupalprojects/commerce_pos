@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\commerce_pos_reports\FunctionalJavascript;
 
-use Drupal\commerce_price\Entity\Currency;
 use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
 use Drupal\commerce_order\Entity\Order;
 use Drupal\commerce_payment\Entity\Payment;

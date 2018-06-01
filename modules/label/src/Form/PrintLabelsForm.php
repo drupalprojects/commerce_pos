@@ -5,7 +5,6 @@ namespace Drupal\commerce_pos_label\Form;
 use Drupal\commerce_pos\UPC;
 use Drupal\commerce_pos_label\Ajax\PrintLabelsCommand;
 use Drupal\commerce_price\CurrencyFormatter;
-use Drupal\commerce_price\NumberFormatterFactoryInterface;
 use Drupal\commerce_price\RounderInterface;
 use Drupal\commerce_product\Entity\ProductVariationInterface;
 use Drupal\Core\Ajax\AjaxResponse;

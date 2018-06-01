@@ -236,7 +236,7 @@ function commerce_pos_reports_get_totals($date_filter, $register_id) {
 function commerce_pos_reports_get_payment_gateway_options() {
   /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface[] $payment_gateway_entities */
   $payment_gateway_entities = \Drupal::service('entity_type.manager')->getStorage('commerce_payment_gateway')->loadMultiple();
-  $payment_gateways = array();
+  $payment_gateways = [];
 
   foreach ($payment_gateway_entities as $payment_gateway_entity) {
     if ($payment_gateway_entity->status()) {
