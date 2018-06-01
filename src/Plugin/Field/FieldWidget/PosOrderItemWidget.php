@@ -255,6 +255,7 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
    *   The oprder item form.
    */
   protected function orderItemForm(OrderItem $order_item, $wrapper_id) {
+    $user = \Drupal::currentUser();
     $product = $order_item->getPurchasedEntity();
     // If we don't render product here the title appears in the wrong place.
     // @todo work out why are fix this.
@@ -262,62 +263,62 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     $product_render = $view_builder->view($product, $this->getSetting('purchasable_entity_view_mode'), $order_item->language()
       ->getId());
     $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
-    $form = [
-      'purchasable_entity' => [
-        '#type' => 'markup',
-        '#markup' => \Drupal::service('renderer')->render($product_render),
-      ],
-      'unit_price' => [
-        '#type' => 'commerce_price',
-        '#title' => $this->t('Unit price'),
-        '#title_display' => 'invisible',
-        '#name' => 'update_unit_price_' . $product->id(),
-        '#default_value' => $order_item->getUnitPrice()->toArray(),
-        '#allow_negative' => TRUE,
-        '#order_item_id' => $order_item->id(),
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-          'event' => 'change',
-          'progress' => [
-            'message' => '',
-          ],
+    $form['purchasable_entity'] = [
+      '#type' => 'markup',
+      '#markup' => \Drupal::service('renderer')->render($product_render),
+    ];
+    $form['unit_price'] = [
+      '#type' => 'commerce_price',
+      '#title' => $this->t('Unit price'),
+      '#title_display' => 'invisible',
+      '#name' => 'update_unit_price_' . $product->id(),
+      '#default_value' => $order_item->getUnitPrice()->toArray(),
+      '#allow_negative' => TRUE,
+      '#order_item_id' => $order_item->id(),
+      '#disabled' => !$user->hasPermission('alter product unit price') ? TRUE : FALSE,
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRefresh'],
+        'wrapper' => $wrapper_id,
+        'event' => 'change',
+        'progress' => [
+          'message' => '',
         ],
       ],
-      'quantity' => [
-        '#title' => $this->t('Quantity'),
-        '#title_display' => 'invisible',
-        '#type' => 'number',
-        '#default_value' => $order_item->getQuantity(),
-        '#attributes' => [
-          'class' => [
-            'commerce-pos-order-item-quantity',
-          ],
+    ];
+
+    $form['quantity'] = [
+      '#title' => $this->t('Quantity'),
+      '#title_display' => 'invisible',
+      '#type' => 'number',
+      '#default_value' => $order_item->getQuantity(),
+      '#attributes' => [
+        'class' => [
+          'commerce-pos-order-item-quantity',
         ],
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-          'event' => 'change',
-          'progress' => [
-            'message' => '',
-          ],
-        ],
-        '#order_item_id' => $order_item->id(),
       ],
-      'remove_order_item' => [
-        '#type' => 'button',
-        '#name' => 'remove_order_item_' . $order_item->id(),
-        '#value' => $this->t('Remove'),
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-          'progress' => [
-            'message' => '',
-          ],
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRefresh'],
+        'wrapper' => $wrapper_id,
+        'event' => 'change',
+        'progress' => [
+          'message' => '',
         ],
-        '#order_item_id' => $order_item->id(),
-        '#limit_validation_errors' => [],
       ],
+      '#order_item_id' => $order_item->id(),
+    ];
+    $form['remove_order_item'] = [
+      '#type' => 'button',
+      '#name' => 'remove_order_item_' . $order_item->id(),
+      '#value' => $this->t('Remove'),
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRefresh'],
+        'wrapper' => $wrapper_id,
+        'progress' => [
+          'message' => '',
+        ],
+      ],
+      '#order_item_id' => $order_item->id(),
+      '#limit_validation_errors' => [],
     ];
 
     // If we're adding a new order item, add a checkbox to toggle the item
