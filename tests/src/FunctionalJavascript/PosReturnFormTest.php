@@ -61,8 +61,8 @@ class PosReturnFormTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -81,8 +81,8 @@ class PosReturnFormTest extends JavascriptTestBase {
     $web_assert->assertWaitOnAjaxRequest();
 
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '2.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '2.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $100.00');
     $web_assert->pageTextContains('To Pay $100.00');
 
@@ -95,6 +95,7 @@ class PosReturnFormTest extends JavascriptTestBase {
 
     $this->getSession()->getPage()->fillField('keypad[amount]', '100');
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $100.00');
     $web_assert->pageTextContains('Cash $100.00');
     $web_assert->pageTextContains('Total Paid $100.00');
@@ -129,8 +130,8 @@ class PosReturnFormTest extends JavascriptTestBase {
 
     // Ensure we have all the items as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '2.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '2.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
 
     // Ensure the 'Return' button exists and then click it.
     $return_button_xpath = '//*[@id="edit-order-items-target-id-order-items-0-return-order-item"]';
@@ -139,8 +140,8 @@ class PosReturnFormTest extends JavascriptTestBase {
     $this->waitForAjaxToFinish();
 
     // Ensure a return item is created.
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][unit_price][number]', '-50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '-50.00');
 
     // Ensure the totals are correct.
     $web_assert->pageTextContains('Total $50.00');

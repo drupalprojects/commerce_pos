@@ -123,10 +123,12 @@ class POSForm extends ContentEntityForm {
       'event' => 'change',
     ];
 
+    /* @var \Drupal\commerce_order\Entity\Order $order */
+    $order = $this->entity;
+
     // Save the email if it has been changed.
     $triggering_element = $form_state->getTriggeringElement();
     if (isset($triggering_element['#element_key']) && $triggering_element['#element_key'] == 'order-mail') {
-      $order = $this->entity;
       $order->setEmail($form_state->getValue('mail'));
       $order->save();
     }
@@ -305,6 +307,10 @@ class POSForm extends ContentEntityForm {
         '#submit' => ['::submitForm'],
         '#payment_gateway_id' => $option_id,
         '#element_key' => 'add-payment',
+        '#ajax' => [
+          'wrapper' => $form_state->wrapper_id,
+          'callback' => '::ajaxRefresh',
+        ],
       ];
     }
 
@@ -436,7 +442,7 @@ class POSForm extends ContentEntityForm {
   }
 
   /**
-   * AJAX callback for the Pay form keypad.
+   * AJAX callback for the contact email.
    */
   public function emailAjaxRefresh($form, &$form_state) {
     return $form['mail'];
@@ -646,6 +652,9 @@ class POSForm extends ContentEntityForm {
 
     $form['totals']['totals'] = [
       '#type' => 'table',
+      '#attributes' => [
+        'class' => 'commerce-pos--totals--totals',
+      ],
       '#rows' => $totals,
     ];
 
@@ -653,6 +662,9 @@ class POSForm extends ContentEntityForm {
     $payment_totals = [];
     $form['totals']['payments'] = [
       '#type' => 'table',
+      '#attributes' => [
+        'class' => 'commerce-pos--totals--payments',
+      ],
     ];
     foreach ($this->getOrderPayments() as $payment) {
       $amount = $payment->getAmount();
@@ -702,8 +714,22 @@ class POSForm extends ContentEntityForm {
     $balances = [];
     foreach ($payment_totals as $currency_code => $amount) {
       $balances[] = [
-        $this->t('Total Paid'),
-        $currency_formatter->format((string) $amount, $currency_code),
+        'class' => 'commerce-pos--totals--total-paid',
+        'data' => [
+          $this->t('Total Paid'),
+          $currency_formatter->format((string) $amount, $currency_code),
+        ],
+      ];
+    }
+
+    // If we didn't set a total paid above, we should set it to 0.
+    if (empty($balances)) {
+      $balances[] = [
+        'class' => 'commerce-pos--totals--total-paid',
+        'data' => [
+          $this->t('Total Paid'),
+          $currency_formatter->format('0', $order->getStore()->getDefaultCurrency()->getCurrencyCode()),
+        ],
       ];
     }
     $remaining_balance = $this->getOrderBalance();
@@ -725,6 +751,7 @@ class POSForm extends ContentEntityForm {
     $formatted_change_amount = $currency_formatter->format((string) $change, $remaining_balance->getCurrencyCode());
     $balances[] = [
       'class' => [
+        'commerce-pos--totals--change',
         'commerce-pos--totals--to-pay',
         'commerce-pos--totals--to-pay--change',
       ],

@@ -230,7 +230,8 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
 
     /** @var \Drupal\commerce_order\Entity\OrderItem $entity */
     foreach ($referenced_entities as $entity) {
-      $element['order_items'][] = $this->orderItemForm($entity, $wrapper_id);
+      $item_form = $this->orderItemForm($entity, $wrapper_id);
+      array_unshift($element['order_items'], $item_form);
 
       // Save in the form_state that we have a return item on this order, if the
       // order item is a 'return' type.
@@ -258,67 +259,90 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     $user = \Drupal::currentUser();
     $product = $order_item->getPurchasedEntity();
     // If we don't render product here the title appears in the wrong place.
-    // @todo work out why are fix this.
+    // @todo work out why and fix this.
     $view_builder = $this->entityTypeManager->getViewBuilder($order_item->getEntityTypeId());
     $product_render = $view_builder->view($product, $this->getSetting('purchasable_entity_view_mode'), $order_item->language()
       ->getId());
     $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
+    $unit_price = $order_item->getUnitPrice();
+
     $form['purchasable_entity'] = [
       '#type' => 'markup',
       '#markup' => \Drupal::service('renderer')->render($product_render),
     ];
     $form['unit_price'] = [
-      '#type' => 'commerce_price',
-      '#title' => $this->t('Unit price'),
-      '#title_display' => 'invisible',
-      '#name' => 'update_unit_price_' . $product->id(),
-      '#default_value' => $order_item->getUnitPrice()->toArray(),
-      '#allow_negative' => TRUE,
-      '#order_item_id' => $order_item->id(),
-      '#disabled' => !$user->hasPermission('alter product unit price') ? TRUE : FALSE,
-      '#ajax' => [
-        'callback' => [$this, 'ajaxRefresh'],
-        'wrapper' => $wrapper_id,
-        'event' => 'change',
-        'progress' => [
-          'message' => '',
+      'unit_price' => [
+        '#type' => 'commerce_price',
+        '#title' => $this->t('Unit price'),
+        '#title_display' => 'invisible',
+        '#name' => 'update_unit_price_' . $product->id(),
+        '#default_value' => $unit_price->toArray(),
+        '#allow_negative' => TRUE,
+        '#order_item_id' => $order_item->id(),
+        '#disabled' => !$user->hasPermission('alter product unit price') ? TRUE : FALSE,
+        '#ajax' => [
+          'callback' => [$this, 'ajaxRefresh'],
+          'wrapper' => $wrapper_id,
+          'event' => 'change',
+          'progress' => [
+            'message' => '',
+          ],
+        ],
+        'unit_price_hidden' => [
+          '#type' => 'hidden',
+          '#value' => $currency_formatter->format($unit_price->getNumber(), $unit_price->getCurrencyCode()),
+          '#attributes' => [
+            'class' => 'commerce-pos-customer-display-unit-price-hidden',
+          ],
         ],
       ],
-    ];
-
-    $form['quantity'] = [
-      '#title' => $this->t('Quantity'),
-      '#title_display' => 'invisible',
-      '#type' => 'number',
-      '#default_value' => $order_item->getQuantity(),
-      '#attributes' => [
-        'class' => [
-          'commerce-pos-order-item-quantity',
+      'item_total_price_hidden' => [
+        '#type' => 'hidden',
+        '#value' => $currency_formatter->format($order_item->getTotalPrice()->getNumber(), $order_item->getTotalPrice()->getCurrencyCode()),
+        '#attributes' => [
+          'class' => 'commerce-pos-customer-display-item-total-price-hidden',
         ],
       ],
-      '#ajax' => [
-        'callback' => [$this, 'ajaxRefresh'],
-        'wrapper' => $wrapper_id,
-        'event' => 'change',
-        'progress' => [
-          'message' => '',
+      'quantity' => [
+        'quantity' => [
+          '#title' => $this->t('Quantity'),
+          '#title_display' => 'invisible',
+          '#type' => 'number',
+          '#default_value' => $order_item->getQuantity(),
+          '#attributes' => [
+            'class' => [
+              'commerce-pos-order-item-quantity',
+            ],
+          ],
+          '#ajax' => [
+            'callback' => [$this, 'ajaxRefresh'],
+            'wrapper' => $wrapper_id,
+            'event' => 'change',
+            'progress' => [
+              'message' => '',
+            ],
+          ],
+          '#order_item_id' => $order_item->id(),
+        ],
+        'quantity_hidden' => [
+          '#type' => 'hidden',
+          '#value' => $order_item->getQuantity(),
         ],
       ],
-      '#order_item_id' => $order_item->id(),
-    ];
-    $form['remove_order_item'] = [
-      '#type' => 'button',
-      '#name' => 'remove_order_item_' . $order_item->id(),
-      '#value' => $this->t('Remove'),
-      '#ajax' => [
-        'callback' => [$this, 'ajaxRefresh'],
-        'wrapper' => $wrapper_id,
-        'progress' => [
-          'message' => '',
+      'remove_order_item' => [
+        '#type' => 'button',
+        '#name' => 'remove_order_item_' . $order_item->id(),
+        '#value' => $this->t('Remove'),
+        '#ajax' => [
+          'callback' => [$this, 'ajaxRefresh'],
+          'wrapper' => $wrapper_id,
+          'progress' => [
+            'message' => '',
+          ],
         ],
+        '#order_item_id' => $order_item->id(),
+        '#limit_validation_errors' => [],
       ],
-      '#order_item_id' => $order_item->id(),
-      '#limit_validation_errors' => [],
     ];
 
     // If we're adding a new order item, add a checkbox to toggle the item
@@ -407,12 +431,13 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     elseif (strpos($trigger_element['#name'], 'set_order_item_as_return_') === 0) {
       $order = $this->toggleOrderItemAsReturn($items, $form, $form_state);
     }
-    elseif (preg_match('/^order_items\[target_id\]\[order_items\]\[([0-9])*\]\[unit_price\]\[number\]$/', $trigger_element['#name'])) {
+    elseif (preg_match('/^order_items\[target_id\]\[order_items\]\[([0-9])*\]\[unit_price\]\[unit_price\]\[number\]$/', $trigger_element['#name'])) {
       $order = $this->updateUnitPrice($items, $form, $form_state);
     }
-    elseif (preg_match('/^order_items\[target_id\]\[order_items\]\[([0-9])*\]\[quantity\]$/', $trigger_element['#name'])) {
+    elseif (preg_match('/^order_items\[target_id\]\[order_items\]\[([0-9])*\]\[quantity\]\[quantity\]$/', $trigger_element['#name'])) {
       $order = $this->updateQuantity($items, $form, $form_state);
     }
+
     if ($order) {
       // Update the draft order with the changes.
       $order->recalculateTotalPrice()->save();
@@ -596,6 +621,10 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
       ->getValue()['target_id']);
     /** @var \Drupal\commerce_order\Entity\Order $order */
     $order = $form_state->getFormObject()->getEntity();
+
+    $order_item_id = $form_state->getCompleteForm()['order_items']['widget']['target_id']['order_items'][$value_key[3]]['unit_price']['unit_price']['#order_item_id'];
+
+    $order_item = OrderItem::load($order_item_id);
 
     $order_item
       ->setUnitPrice(new Price($value['number'], $value['currency_code']), TRUE)

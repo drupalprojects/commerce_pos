@@ -63,8 +63,8 @@ class ParkOrderTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -116,8 +116,8 @@ class ParkOrderTest extends JavascriptTestBase {
     $this->assertEquals($this->getAbsoluteUrl($url->toString()), $this->getUrl());
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -129,9 +129,11 @@ class ParkOrderTest extends JavascriptTestBase {
     // orders.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->click('#edit-keypad-add');
+    $web_assert->assertWaitOnAjaxRequest();
     $web_assert->waitForButton('commerce-pos-finish');
 
     $this->click('input[name="commerce-pos-finish"]');
+
     $this->drupalGet(Url::fromRoute('commerce_pos.main', ['commerce_order' => 1]));
     $web_assert->buttonNotExists('Park Order');
     \Drupal::entityTypeManager()->getStorage('commerce_order')->resetCache([1]);

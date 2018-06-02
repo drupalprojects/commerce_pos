@@ -1,0 +1,10 @@
+{
+  "name": "drupal/commerce_pos_customer_display",
+  "type": "drupal-module",
+  "description": "Commerce POS Real Time Customer Display.",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "cboden/ratchet": "^0.4.1"
+  },
+  "minimum-stability": "dev"
+}

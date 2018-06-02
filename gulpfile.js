@@ -18,6 +18,7 @@ var paths = {
     { src: './modules/keypad/sass/**/*.scss', dest: './modules/keypad/css'},
     { src: './modules/reports/sass/**/*.scss', dest: './modules/reports/css'},
     { src: './modules/barcode_scanning/sass/**/*.scss', dest: './modules/barcode_scanning/css'},
+    { src: './modules/customer_display/sass/**/*.scss', dest: './modules/customer_display/css'},
     { src: './sass/**/*.scss', dest: './css' }
   ]
 };

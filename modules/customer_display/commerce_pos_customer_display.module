@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\Entity\User;
+
+/**
+ * Form Alter.
+ */
+function commerce_pos_customer_display_form_commerce_pos_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'commerce_pos_customer_display/register';
+
+  $register = \Drupal::service('commerce_pos.current_register')->get();
+
+  if (isset($register)) {
+    $form['#attached']['drupalSettings']['commercePOSCustomerDisplayRegisterId'] = $register->id();
+  }
+
+  $user = User::load(\Drupal::currentUser()->id());
+  $form['#attached']['drupalSettings']['commercePOSCustomerDisplayCashierName'] = $user->getAccountName();
+
+  $config = \Drupal::configFactory()->getEditable('commerce_pos_customer_display.settings');
+
+  $url = 'wss://' . $config->get('websocket_host') . ':' . $config->get('websocket_external_port') . '/display';
+  $form['#attached']['drupalSettings']['commercePOSCustomerDisplayURL'] = $url;
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function commerce_pos_customer_display_theme($existing, $type, $theme, $path) {
+  return [
+    'commerce_pos_customer_display_display' => [
+      'variables' => [
+        'store' => NULL,
+        'register' => NULL,
+      ],
+    ],
+  ];
+
+}

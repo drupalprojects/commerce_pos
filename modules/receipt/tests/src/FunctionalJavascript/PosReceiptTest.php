@@ -67,6 +67,7 @@ class PosReceiptTest extends JavascriptTestBase {
     // Go to the payment page.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $this->getSession()->getPage()->fillField('totals[print_email_receipt]', 'none');
     $web_assert->waitForButton('commerce-pos-finish');
     $this->click('input[name="commerce-pos-finish"]');

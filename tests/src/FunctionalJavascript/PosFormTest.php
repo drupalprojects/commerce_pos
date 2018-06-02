@@ -66,8 +66,8 @@ class PosFormTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -86,8 +86,8 @@ class PosFormTest extends JavascriptTestBase {
     $web_assert->assertWaitOnAjaxRequest();
 
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '2.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '2.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $100.00');
     $web_assert->pageTextContains('To Pay $100.00');
 
@@ -102,24 +102,24 @@ class PosFormTest extends JavascriptTestBase {
     $web_assert->assertWaitOnAjaxRequest();
 
     $web_assert->pageTextContains('T-Shirt');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][unit_price][number]', '23.20');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '23.20');
     $web_assert->pageTextContains('Total $123.20');
     $web_assert->pageTextContains('To Pay $123.20');
 
     // Click on the buttons to add another Jumper.
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity]', '3');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][1][quantity][quantity]', '3');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '3.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][quantity][quantity]', '3.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $173.20');
     $web_assert->pageTextContains('To Pay $173.20');
 
     // Change the price of jumpers on the form.
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][unit_price][number]', '40.50');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][1][unit_price][unit_price][number]', '40.50');
     $web_assert->assertWaitOnAjaxRequest();
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '40.50');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][1][unit_price][unit_price][number]', '40.50');
     // (3 * 40.5) + (1 * 23.20)
     $web_assert->pageTextContains('To Pay $144.70');
     // Click on the buttons to remove all the jumpers.
@@ -127,23 +127,23 @@ class PosFormTest extends JavascriptTestBase {
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextNotContains('Jumper');
     $web_assert->pageTextContains('T-Shirt');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '23.20');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '23.20');
     $web_assert->pageTextContains('Total $23.20');
     $web_assert->pageTextContains('To Pay $23.20');
     $web_assert->pageTextContains('Change $0.00');
 
     // Set the quantity of t-shirts using the quantity form field.
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity]', '10');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity][quantity]', '10');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('T-Shirt');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '23.20');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '10.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '23.20');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '10.00');
     $web_assert->pageTextContains('Total $232.00');
     $web_assert->pageTextContains('To Pay $232.00');
     $web_assert->pageTextContains('Change $0.00');
 
     // Set the quantity to 0 to remove the T-Shirt.
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity]', '0');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity][quantity]', '0');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextNotContains('T-Shirt');
     $web_assert->pageTextContains('Total $0.00');
@@ -164,7 +164,7 @@ class PosFormTest extends JavascriptTestBase {
     $results[0]->click();
     $web_assert->assertWaitOnAjaxRequest();
 
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][1][quantity]', '2');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity][quantity]', '2');
     $web_assert->assertWaitOnAjaxRequest();
     // (1 * 50) + (2 * 23.20)
     $web_assert->pageTextContains('Total $96.40');
@@ -175,6 +175,7 @@ class PosFormTest extends JavascriptTestBase {
 
     $this->getSession()->getPage()->fillField('keypad[amount]', '50');
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $96.40');
     $web_assert->pageTextContains('Cash $50.00');
     $web_assert->pageTextContains('Total Paid $50.00');
@@ -185,6 +186,7 @@ class PosFormTest extends JavascriptTestBase {
 
     $this->getSession()->getPage()->fillField('keypad[amount]', '46.40');
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $96.40');
     $web_assert->pageTextContains('Cash $50.00');
     $web_assert->pageTextContains('Cash $46.40');
@@ -203,7 +205,7 @@ class PosFormTest extends JavascriptTestBase {
     // Clicking back to order will take us to order page.
     $this->click('input[name="commerce-pos-back-to-order"]');
     // Add one more T-shirt.
-    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][1][quantity]', '3');
+    $this->getSession()->getPage()->fillField('order_items[target_id][order_items][0][quantity][quantity]', '3');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $119.60');
     $web_assert->pageTextContains('Cash $50.00');
@@ -224,6 +226,7 @@ class PosFormTest extends JavascriptTestBase {
 
     $this->getSession()->getPage()->fillField('keypad[amount]', '80');
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
 
     $web_assert->pageTextContains('Total $119.60');
     $web_assert->pageTextContains('Cash $50.00');
@@ -298,8 +301,8 @@ class PosFormTest extends JavascriptTestBase {
 
     // Assert the product is listed as expected and tax is applied properly.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Tax $10.00');
     $web_assert->pageTextContains('Total $60.00');
     $web_assert->pageTextContains('To Pay $60.00');
@@ -362,8 +365,8 @@ class PosFormTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -378,8 +381,8 @@ class PosFormTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -449,6 +452,7 @@ class PosFormTest extends JavascriptTestBase {
     // completed order does not change the register.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $this->click('input[name="commerce-pos-finish"]');
     $this->clickLink('Close Register');
     // Edit the completed order.

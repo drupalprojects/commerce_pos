@@ -95,8 +95,8 @@ class PosFormWithPromotionTest extends JavascriptTestBase {
 
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity]', '1.00');
-    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][number]', '50.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');
+    $web_assert->fieldValueEquals('order_items[target_id][order_items][0][unit_price][unit_price][number]', '50.00');
     $web_assert->pageTextContains('Total $50.00');
     $web_assert->pageTextContains('To Pay $50.00');
 
@@ -108,6 +108,7 @@ class PosFormWithPromotionTest extends JavascriptTestBase {
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->htmlOutput($this->getRawContent());
     $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Subtotal $50.00');
     $web_assert->pageTextContains('Discount -$5.00');
     $web_assert->pageTextContains('Cash $45.00');

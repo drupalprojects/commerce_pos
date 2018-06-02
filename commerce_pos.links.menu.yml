@@ -29,7 +29,7 @@ commerce_pos.main:
   title: 'Point of Sale'
   route_name: 'commerce_pos.main'
   parent: 'commerce_pos.base'
-  description: 'Point of Sale Interface'
+  description: 'Point of Sale'
 
 commerce_pos.login:
   title: 'Cashier Login'
