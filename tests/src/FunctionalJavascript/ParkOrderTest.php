@@ -61,6 +61,8 @@ class ParkOrderTest extends JavascriptTestBase {
     $results[0]->click();
     $web_assert->assertWaitOnAjaxRequest();
 
+    $this->createScreenshot(\Drupal::root() . '/sites/default/files/simpletest/screen.jpg');
+
     // Assert that the product is listed as expected.
     $web_assert->pageTextContains('Jumper');
     $web_assert->fieldValueEquals('order_items[target_id][order_items][0][quantity][quantity]', '1.00');

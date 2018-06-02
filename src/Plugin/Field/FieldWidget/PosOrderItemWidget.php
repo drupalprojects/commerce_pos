@@ -266,26 +266,28 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
     $unit_price = $order_item->getUnitPrice();
 
-    $form['purchasable_entity'] = [
-      '#type' => 'markup',
-      '#markup' => \Drupal::service('renderer')->render($product_render),
-    ];
-    $form['unit_price'] = [
+    $form = [
+      'purchasable_entity' => [
+        '#type' => 'markup',
+        '#markup' => \Drupal::service('renderer')->render($product_render),
+      ],
       'unit_price' => [
-        '#type' => 'commerce_price',
-        '#title' => $this->t('Unit price'),
-        '#title_display' => 'invisible',
-        '#name' => 'update_unit_price_' . $product->id(),
-        '#default_value' => $unit_price->toArray(),
-        '#allow_negative' => TRUE,
-        '#order_item_id' => $order_item->id(),
-        '#disabled' => !$user->hasPermission('alter product unit price') ? TRUE : FALSE,
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-          'event' => 'change',
-          'progress' => [
-            'message' => '',
+        'unit_price' => [
+          '#type' => 'commerce_price',
+          '#title' => $this->t('Unit price'),
+          '#title_display' => 'invisible',
+          '#name' => 'update_unit_price_' . $product->id(),
+          '#default_value' => $unit_price->toArray(),
+          '#allow_negative' => TRUE,
+          '#order_item_id' => $order_item->id(),
+          '#disabled' => !$user->hasPermission('alter product unit price') ? TRUE : FALSE,
+          '#ajax' => [
+            'callback' => [$this, 'ajaxRefresh'],
+            'wrapper' => $wrapper_id,
+            'event' => 'change',
+            'progress' => [
+              'message' => '',
+            ],
           ],
         ],
         'unit_price_hidden' => [
@@ -295,12 +297,12 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
             'class' => 'commerce-pos-customer-display-unit-price-hidden',
           ],
         ],
-      ],
-      'item_total_price_hidden' => [
-        '#type' => 'hidden',
-        '#value' => $currency_formatter->format($order_item->getTotalPrice()->getNumber(), $order_item->getTotalPrice()->getCurrencyCode()),
-        '#attributes' => [
-          'class' => 'commerce-pos-customer-display-item-total-price-hidden',
+        'item_total_price_hidden' => [
+          '#type' => 'hidden',
+          '#value' => $currency_formatter->format($order_item->getTotalPrice()->getNumber(), $order_item->getTotalPrice()->getCurrencyCode()),
+          '#attributes' => [
+            'class' => 'commerce-pos-customer-display-item-total-price-hidden',
+          ],
         ],
       ],
       'quantity' => [
