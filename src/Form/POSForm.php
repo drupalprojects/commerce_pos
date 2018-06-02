@@ -752,8 +752,6 @@ class POSForm extends ContentEntityForm {
     $balances[] = [
       'class' => [
         'commerce-pos--totals--change',
-        'commerce-pos--totals--to-pay',
-        'commerce-pos--totals--to-pay--change',
       ],
       'data' => [$this->t('Change'), $formatted_change_amount],
     ];
