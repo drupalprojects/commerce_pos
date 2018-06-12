@@ -20,6 +20,7 @@ class LabelTest extends JavascriptTestBase {
    * @var array
    */
   public static $modules = [
+    'commerce_pos_print',
     'commerce_pos_label',
   ];
 

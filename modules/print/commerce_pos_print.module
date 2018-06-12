@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Provides the ability to give print functionality for other sub-modules.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function commerce_pos_print_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the commerce_pos_label module.
+    case 'help.page.commerce_pos_print':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides the ability to give print functionality for other sub-modules.') . '</p>';
+
+      return $output;
+  }
+}

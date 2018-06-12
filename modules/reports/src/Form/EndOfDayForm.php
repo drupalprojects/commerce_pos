@@ -30,7 +30,7 @@ class EndOfDayForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Setup form.
     $form['#attached']['library'][] = 'commerce_pos_reports/reports';
-    $form['#attached']['library'][] = 'commerce_pos/jQuery.print';
+    $form['#attached']['library'][] = 'commerce_pos_print/jQuery.print';
 
     $can_update = $this->currentUser()->hasPermission('update commerce pos closed reports');
 

@@ -23,6 +23,7 @@ class KeypadTest extends JavascriptTestBase {
     'commerce_pos_keypad_test',
     'commerce_pos',
     'commerce_pos_keypad',
+    'commerce_pos_print',
     'commerce_pos_reports',
     'commerce_pos_currency_denominations',
   ];

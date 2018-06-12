@@ -45,6 +45,7 @@ class EndOfDayTest extends JavascriptTestBase {
     'commerce_pos_reports',
     'commerce_store',
     'commerce_price',
+    'commerce_pos_print',
     'commerce_pos_reports',
   ];
 

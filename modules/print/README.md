@@ -1,7 +1,7 @@
-The receipt submodule provides receipt printing. You may configure custom
-receipt header/footer at `admin/commerce/config/pos/receipt`.
+The print submodule provides printing library which is further
+used by other submodules.
 
-This module depends on the `jQuery.print` plugin which should reside in your 
+This module depends on the `jQuery.print` plugin which should reside in your
 site's `/libraries` directory.
 
 We can install `jQuery.print` using composer or by downloading manually.
@@ -16,7 +16,7 @@ We can install `jQuery.print` using composer or by downloading manually.
     "DoersGuild/jQuery.print": "master"
  }
 ```
-3. Add `"libraries/{$name}": ["type:drupal-library"]` 
+3. Add `"libraries/{$name}": ["type:drupal-library"]`
 to the `"installer-paths"`.
 ```
 "installer-paths": {
@@ -42,12 +42,12 @@ to the `"installer-paths"`.
                 "reference": "origin/master"
             }
         }
-    }   
+    }
 }
 ```
 5. Run `composer update DoersGuild/jQuery.print`.
 
 ### Manual method
 1. Create `libraries` folder if it doesn't exists in the docroot of website.
-2. `cd` into libraries folder and run 
+2. `cd` into libraries folder and run
 `git clone https://github.com/DoersGuild/jQuery.print.git`.

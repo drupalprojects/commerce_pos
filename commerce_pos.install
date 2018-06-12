@@ -166,3 +166,10 @@ function commerce_pos_update_8205() {
 
   $active_storage->write('field.storage.commerce_order.field_register', $source->read('field.storage.commerce_order.field_register'));
 }
+
+/**
+ * Enabling commerce_pos_print module.
+ */
+function commerce_pos_update_8206() {
+  \Drupal::service('module_installer')->install(['commerce_pos_print']);
+}

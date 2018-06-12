@@ -1,0 +1,9 @@
+jQuery.print:
+  version: VERSION
+  js:
+    /libraries/jQuery.print/jQuery.print.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.ajax

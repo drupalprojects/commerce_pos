@@ -60,6 +60,7 @@ class DefaultConfigTest extends KernelTestBase {
       ['commerce_pos_keypad'],
       ['commerce_pos_label'],
       ['commerce_pos_receipt'],
+      ['commerce_pos_print'],
       ['commerce_pos_reports'],
     ];
   }

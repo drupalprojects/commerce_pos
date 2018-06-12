@@ -116,7 +116,7 @@ class PrintLabelsForm extends FormBase {
     $product_variation = $commerce_product_variation;
 
     $form['#attached']['library'][] = 'commerce_pos_label/label';
-    $form['#attached']['library'][] = 'commerce_pos/jQuery.print';
+    $form['#attached']['library'][] = 'commerce_pos_print/jQuery.print';
 
     $labels_to_create = $this->getLabelList($form_state);
     if ($product_variation && !$labels_to_create) {

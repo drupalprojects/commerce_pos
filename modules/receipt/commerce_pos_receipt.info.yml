@@ -1,4 +1,4 @@
-name: commerce_pos_receipt
+name: Commerce POS Receipts
 description: Provides receipts printing for Commerce Point of Sale
 type: module
 core: 8.x
