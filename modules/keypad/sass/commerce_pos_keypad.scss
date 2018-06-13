@@ -1,19 +1,13 @@
 .commerce-pos-keypad {
+  margin: 0 auto;
+
   @media screen and (min-width: 1200px) {
-    width: 85%
+    width: 100%
   }
 }
 
 .commerce-pos-keypad * {
-  box-sizing: border-box
-}
-
-.commerce-pos-keypad-key.pressed {
-  background-color: #E4E4E4
-}
-
-.commerce-pos-keypad .commerce-pos-keypad-key:hover, .commerce-pos-keypad .commerce-pos-keypad-key:focus {
-  background-color: #E4E4E4
+  box-sizing: border-box;
 }
 
 .commerce-pos-keypad .commerce-pos-keypad-numbers {
@@ -22,36 +16,10 @@
 
 .commerce-pos-keypad .commerce-pos-keypad-keys {
   overflow: hidden;
-  padding: 0;
+  padding: 10px;
   margin: 20px 0;
-  border-right: 1px solid #D6D6D6
-}
-
-.commerce-pos-keypad .commerce-pos-keypad-key {
-  box-sizing: border-box;
-  width: 33.33%;
-  display: block;
-  float: left;
-  padding: 14px;
-  border: 1px solid #D6D6D6;
-  border-right: 0;
-  border-bottom: 0;
-  font-size: 22px;
-  text-align: center;
-  background-color: #F0F0F0;
-  color: #000000;
-  cursor: pointer;
-  transition: all .1s ease 0s
-}
-
-.commerce-pos-keypad-actions button {
-  width: 33%;
-  padding: 15px;
-  margin-right: 10px;
-  border: 10px solid white;
-  border-radius: 30px;
-  float: right;
-  font-size: 2em
+  border: none;
+  background: #F7F7F7;
 }
 
 .form-type-textfield.form-item-keypad-amount.form-text {
@@ -62,20 +30,25 @@
   border: 0;
   border-right: 1px solid #fff;
   font-size: 50px;
-  text-align: right
+  text-align: right;
 }
+.details-wrapper {
+  input.button {
+    background: #0074bd;
+    color: #FFFFFF;
+    padding: 5px 2.5em;
+    position: absolute;
+    margin-left: 162px;
+    top: 35px;
+    text-shadow: 0 1px hsla(0, 0%, 0%, 0.5);
+     @media screen and (max-width: 700px) {
+       position: relative;
+       margin-left: 0;
+       top: 0;
+       white-space: normal;
+     }
 
-.commerce-pos-keypad-key:last-of-type {
-  background-color: #E4E4E4;
-  color: #000
-}
-
-.commerce-pos-keypad-key:last-of-type:hover, .commerce-pos-keypad-key:last-of-type:focus {
-  background-color: #DADADA
-}
-
-.commerce-pos-keypad-actions button:hover, .commerce-pos-keypad-actions button:focus {
-  border-color: white
+  }
 }
 
 .commerce-pos-keypad-cash-input-box-wrap {
@@ -290,45 +263,48 @@
 
 .commerce-pos-keypad-key {
   box-sizing: border-box;
-  width: 33.33%;
+  width: calc(100% / 3 - 10px);
   display: block;
   float: left;
-  padding: 14px;
-  border: 1px solid #d6d6d6;
-  border-right: 0;
-  border-bottom: 0;
-  font-size: 22px;
+  padding: 28px 5px;
+  margin: 5px;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  font-size: 30px;
   text-align: center;
-  background-color: #f0f0f0;
-  color: #000000;
+  background-color: #FFFFFF;
+  color: #666666;
   cursor: pointer;
-  transition: all .1s ease 0s;
+  transition: all .2s ease;
+  &:hover, &:focus {
+    cursor: pointer;
+    background-color: #FFFFFF;
+    border: 1px solid #0074bd;
+    color: #0074bd;
+  }
+
+  &:last-of-type {
+    background-color: #F0F0F0;
+    &:hover, &:focus {
+      background-color: #F0F0F0;
+    }
+  }
 }
 
-.commerce-pos-keypad-key:hover {
-  cursor: pointer;
-  background-color: #e4e4e4;
-}
+.commerce-pos-keypad-actions {
+  .commerce-pos-keypad-key:last-of-type {
+    background-color: #F0F0F0;
+  }
 
-.commerce-pos-keypad-action {
-  width: 100%;
-  box-sizing: border-box;
-  display: block;
-  float: left;
-  padding: 14px;
-  border: 1px solid #d6d6d6;
-  border-right: 0;
-  border-bottom: 0;
-  font-size: 22px;
-  text-align: center;
-  background-color: #337ab7 !important;
-  color: #fff;
-  cursor: pointer;
-  transition: all .1s ease 0s;
-}
-
-.commerce-pos-keypad-action:hover {
-  background-color: #2e6da4 !important;
+  button {
+    width: 33%;
+    padding: 15px;
+    margin-right: 10px;
+    border: 10px solid white;
+    border-radius: 30px;
+    float: right;
+    font-size: 2em
+  }
 }
 
 .commerce-pos-keypad-close {

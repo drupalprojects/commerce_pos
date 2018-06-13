@@ -46,25 +46,25 @@ class KeypadTest extends JavascriptTestBase {
   public function testCommercePosForm() {
     $web_assert = $this->assertSession();
     $this->drupalGet('commerce_pos_keypad_pos_test');
-    $web_assert->fieldValueEquals('keypad[amount]', '100');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '100');
     $this->getSession()->getPage()->find('xpath', '//*[@id="commerce-pos-sale-keypad-wrapper"]/div/div[2]/div[1]/div[1]');
     // When the first character is typed, the input is automatically cleared,
     // like placeholder text.
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="7"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '7');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '7');
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="0"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '70');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '70');
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-key-action="backspace"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '7');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '7');
     $this->xpath('//div[@class="commerce-pos-keypad-key clear-key" and @data-key-action="clear"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '');
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="1"]')[0]->click();
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="000"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '1000');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '1000');
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="."]')[0]->click();
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="5"]')[0]->click();
     $this->xpath('//div[@class="commerce-pos-keypad-key" and @data-keybind="2"]')[0]->click();
-    $web_assert->fieldValueEquals('keypad[amount]', '1000.52');
+    $web_assert->fieldValueEquals('pos_cash[keypad][amount]', '1000.52');
   }
 
   /**

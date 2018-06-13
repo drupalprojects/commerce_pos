@@ -93,8 +93,8 @@ class PosReturnFormTest extends JavascriptTestBase {
     $web_assert->pageTextContains('To Pay $100.00');
     $web_assert->pageTextContains('Change $0.00');
 
-    $this->getSession()->getPage()->fillField('keypad[amount]', '100');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '100');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $100.00');
     $web_assert->pageTextContains('Cash $100.00');

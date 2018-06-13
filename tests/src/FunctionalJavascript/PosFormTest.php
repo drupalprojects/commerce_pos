@@ -173,8 +173,8 @@ class PosFormTest extends JavascriptTestBase {
     // Go to the payment page.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
 
-    $this->getSession()->getPage()->fillField('keypad[amount]', '50');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '50');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $96.40');
     $web_assert->pageTextContains('Cash $50.00');
@@ -184,8 +184,8 @@ class PosFormTest extends JavascriptTestBase {
     $button = $this->getSession()->getPage()->find('css', 'input[name="commerce-pos-finish"]');
     $this->assertTrue($button->hasAttribute('disabled'), 'Finish button is disabled');
 
-    $this->getSession()->getPage()->fillField('keypad[amount]', '46.40');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '46.40');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Total $96.40');
     $web_assert->pageTextContains('Cash $50.00');
@@ -224,8 +224,8 @@ class PosFormTest extends JavascriptTestBase {
     $web_assert->pageTextContains('To Pay $69.60');
     $web_assert->pageTextContains('Change $0.00');
 
-    $this->getSession()->getPage()->fillField('keypad[amount]', '80');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '80');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
 
     $web_assert->pageTextContains('Total $119.60');
@@ -451,7 +451,7 @@ class PosFormTest extends JavascriptTestBase {
     // Complete the order, open the other register and ensure that editing the
     // completed order does not change the register.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
     $this->click('input[name="commerce-pos-finish"]');
     $this->clickLink('Close Register');

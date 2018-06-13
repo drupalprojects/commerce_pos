@@ -32,6 +32,7 @@ class KeypadPosForm extends FormBase {
       '#required' => TRUE,
       '#default_value' => 100,
       '#commerce_pos_keypad' => TRUE,
+      '#name' => 'pos_cash[keypad][amount]',
       '#attributes' => [
         'autofocus' => 'autofocus',
         'autocomplete' => 'off',

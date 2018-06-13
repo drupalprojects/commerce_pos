@@ -67,8 +67,8 @@ class SetOrderCustomerTest extends JavascriptTestBase {
 
     // Finish checkout.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
-    $this->getSession()->getPage()->fillField('keypad[amount]', '50');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '50');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $this->waitForAjaxToFinish();
     $this->click('input[name="commerce-pos-finish"]');
     $this->waitForAjaxToFinish();
@@ -81,6 +81,7 @@ class SetOrderCustomerTest extends JavascriptTestBase {
     $this->drupalGet('admin/commerce/pos/main');
 
     // Click the 'New Customer' radio button and confirm the different fields.
+    $this->getSession()->getPage()->findButton('Customer')->click();
     $this->getSession()->getPage()->selectFieldOption('uid[0][target_id][order_customer][customer_type]', 'new');
     $this->waitForAjaxToFinish();
     $web_assert->fieldExists('uid[0][target_id][order_customer][email]');
@@ -106,8 +107,8 @@ class SetOrderCustomerTest extends JavascriptTestBase {
 
     // Finish checkout.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
-    $this->getSession()->getPage()->fillField('keypad[amount]', '50');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '50');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $this->waitForAjaxToFinish();
     $this->click('input[name="commerce-pos-finish"]');
     $this->waitForAjaxToFinish();
@@ -147,8 +148,8 @@ class SetOrderCustomerTest extends JavascriptTestBase {
 
     // Finish checkout.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
-    $this->getSession()->getPage()->fillField('keypad[amount]', '50');
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->getSession()->getPage()->fillField('pos_cash[keypad][amount]', '50');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $this->waitForAjaxToFinish();
     $this->click('input[name="commerce-pos-finish"]');
     $this->waitForAjaxToFinish();

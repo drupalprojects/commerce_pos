@@ -107,7 +107,7 @@ class PosFormWithPromotionTest extends JavascriptTestBase {
     // Go to the payment page.
     $this->getSession()->getPage()->findButton('Pay Now')->click();
     $this->htmlOutput($this->getRawContent());
-    $this->click('input[name="commerce-pos-pay-keypad-add"]');
+    $this->click('input[name="commerce-pos-pay-keypad-add-pos_cash"]');
     $web_assert->assertWaitOnAjaxRequest();
     $web_assert->pageTextContains('Subtotal $50.00');
     $web_assert->pageTextContains('Discount -$5.00');

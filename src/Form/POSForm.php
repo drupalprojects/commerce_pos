@@ -233,18 +233,16 @@ class POSForm extends ContentEntityForm {
     $order_balance = $this->getOrderBalance();
     $balance_paid = $order_balance->getNumber() <= 0;
 
-    $payment_ajax = [
-      'wrapper' => 'commerce-pos-sale-keypad-wrapper',
-      'callback' => '::keypadAjaxRefresh',
-      'effect' => 'fade',
+    $form['payment_tabs'] = [
+      '#type' => 'vertical_tabs',
     ];
 
     foreach ($payment_gateways as $payment_gateway) {
-      $form['payment_options'][$payment_gateway->id()] = [
-        '#type' => 'button',
-        '#value' => $payment_gateway->label(),
+      $form[$payment_gateway->id()] = [
+        '#type' => 'details',
+        '#title' => $payment_gateway->label(),
         '#name' => 'commerce-pos-payment-option-' . $payment_gateway->id(),
-        '#ajax' => $payment_ajax,
+        '#group' => 'payment_tabs',
         '#payment_option_id' => $payment_gateway->id(),
         '#disabled' => $balance_paid,
         '#limit_validation_errors' => [],
@@ -253,6 +251,7 @@ class POSForm extends ContentEntityForm {
 
     $form['keypad'] = [
       '#type' => 'container',
+      '#group' => 'payment_tabs',
       '#id' => 'commerce-pos-sale-keypad-wrapper',
       '#tree' => TRUE,
     ];
@@ -275,41 +274,48 @@ class POSForm extends ContentEntityForm {
       $fraction_digits = $this->currentStore->getStore()
         ->getDefaultCurrency()
         ->getFractionDigits();
-      $form['keypad']['amount'] = [
-        '#type' => 'number',
-        '#title' => $this->t('Enter @title Amount', [
-          '@title' => $payment_gateways[$option_id]->label(),
-        ]),
-        '#step' => pow(0.1, $fraction_digits),
-        '#required' => TRUE,
-        '#default_value' => $keypad_amount,
-        '#commerce_pos_keypad' => TRUE,
-        '#attributes' => [
-          'autofocus' => 'autofocus',
-          'autocomplete' => 'off',
-          'class' => [
-            'commerce-pos-payment-keypad-amount',
+
+      /* @var PaymentGateway $payment_gayeway */
+      foreach ($payment_gateways as $payment_gateway) {
+        $form[$payment_gateway->id()]['keypad']['add'] = [
+          '#type' => 'submit',
+          '#group' => 'payment_tabs',
+          '#value' => $this->t('Add @label Payment', [
+            '@label' => $payment_gateway->label(),
+          ]),
+          '#name' => 'commerce-pos-pay-keypad-add-' . $payment_gateway->id(),
+          '#submit' => ['::submitForm'],
+          '#payment_gateway_id' => $payment_gateway->id(),
+          '#element_key' => 'add-payment',
+          '#ajax' => [
+            'wrapper' => $form_state->wrapper_id,
+            'callback' => '::ajaxRefresh',
           ],
-        ],
-      ];
+        ];
+
+        $form[$payment_gateway->id()]['keypad']['amount'] = [
+          '#type' => 'number',
+          '#title' => $this->t('Enter @title Amount', [
+            '@title' => $payment_gateway->label(),
+          ]),
+          '#step' => pow(0.1, $fraction_digits),
+          '#required' => TRUE,
+          '#default_value' => $keypad_amount,
+          '#commerce_pos_keypad' => TRUE,
+          '#attributes' => [
+            'autofocus' => 'autofocus',
+            'autocomplete' => 'off',
+            'class' => [
+              'commerce-pos-payment-keypad-amount',
+            ],
+          ],
+        ];
+      }
 
       $form['#attached']['drupalSettings']['commerce_pos'] = [
         'commercePosPayment' => [
           'focusInput' => TRUE,
           'selector' => '.commerce-pos-payment-keypad-amount',
-        ],
-      ];
-
-      $form['keypad']['add'] = [
-        '#type' => 'submit',
-        '#value' => $this->t('Add Payment'),
-        '#name' => 'commerce-pos-pay-keypad-add',
-        '#submit' => ['::submitForm'],
-        '#payment_gateway_id' => $option_id,
-        '#element_key' => 'add-payment',
-        '#ajax' => [
-          'wrapper' => $form_state->wrapper_id,
-          'callback' => '::ajaxRefresh',
         ],
       ];
     }
@@ -465,11 +471,12 @@ class POSForm extends ContentEntityForm {
    */
   public function validatePaymentForm(array $form, FormStateInterface $form_state) {
     $triggering_element = $form_state->getTriggeringElement();
-    if ($triggering_element['#name'] == 'commerce-pos-pay-keypad-add') {
-      $keypad_amount = $form_state->getValue('keypad')['amount'];
+    if (substr($triggering_element['#name'], 0, 27) == 'commerce-pos-pay-keypad-add') {
+      $payment_gateway = $triggering_element['#payment_gateway_id'];
+      $keypad_amount = $form_state->getValue($payment_gateway, 'keypad', 'amount')['keypad']['amount'];
 
       if (!is_numeric($keypad_amount)) {
-        $form_state->setError($form['keypad']['amount'], $this->t('Payment amount must be a number.'));
+        $form_state->setError($form[$payment_gateway]['keypad']['amount'], $this->t('Payment amount must be a number.'));
       }
     }
   }
@@ -544,7 +551,7 @@ class POSForm extends ContentEntityForm {
       'order_id' => $this->entity->id(),
       'state' => 'pending',
       'amount' => [
-        'number' => $form_state->getValue('keypad')['amount'],
+        'number' => $form_state->getValue($payment_gateway, 'keypad', 'amount')['keypad']['amount'],
         'currency_code' => $default_currency->getCurrencyCode(),
       ],
     ];
