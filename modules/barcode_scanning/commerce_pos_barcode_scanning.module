@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Allows for camera based barcode scanning.
  */
 
 use Drupal\Core\Form\FormStateInterface;

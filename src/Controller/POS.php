@@ -67,11 +67,9 @@ class POS extends ControllerBase {
    *   A renderable array containing the POS form.
    */
   public function content(Order $commerce_order = NULL) {
+    $cashiers = [];
     if (isset($_COOKIE['commerce_pos_cashiers'])) {
       $cashiers = unserialize($_COOKIE['commerce_pos_cashiers']);
-    }
-    else {
-      $cashiers = [];
     }
 
     $cashiers[$this->currentUser()->id()] = [

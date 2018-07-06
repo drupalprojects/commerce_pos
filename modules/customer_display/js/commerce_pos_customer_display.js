@@ -21,7 +21,7 @@
             if (message.type == 'cashier') {
                 $('.commerce-pos-customer-display__cashier__value').html(message.cashier);
             }
-            if (message.type == 'display_items') {
+            if (message.type == 'display') {
                 var product_output = '';
 
                 // Setup basic line item layout and elements.
@@ -71,8 +71,7 @@
 
                 // Fade in line items.
                 $('.commerce-pos-customer-display__item').fadeIn('fast');
-            }
-            else if (message.type == 'display_totals') {
+
                 var total_output = '';
 
                 message.display_totals.subtotals.forEach(function (total) {

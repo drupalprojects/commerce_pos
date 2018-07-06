@@ -1,11 +1,10 @@
 (function ($) {
   Drupal.behaviors.commercePosReport = {
     attach: function (context, settings) {
-      $(context).find('input.commerce-pos-report-declared-input').once('addOnChange').each(function () {
+      $(context).find("[data-payment-method-id='pos_cash']").once('addOnChange').each(function () {
         var _this = $(this);
         _this.on('change', function () {
           Drupal.CommercePosReport.calculateCashDeposit(_this);
-          Drupal.CommercePosReport.calculateReportBalance(_this);
         });
       });
     }

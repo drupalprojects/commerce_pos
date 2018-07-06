@@ -42,7 +42,6 @@ class PrintController extends ControllerBase {
       $module_handler = \Drupal::service('module_handler');
       $module_path = $module_handler->getModule('commerce_pos_receipt')->getPath();
 
-      // TODO: could this be turned into 1 command, and if so, is that better?
       $response->addCommand(new HtmlCommand('#commerce-pos-receipt', $build));
       $response->addCommand(new SettingsCommand([
         'commercePosReceipt' => [
@@ -87,7 +86,7 @@ class PrintController extends ControllerBase {
 
     // Commerce appears to have a bug where if no adjustments exist, it will
     // return a 0 => null array, which will still trigger a foreach loop.
-    foreach ($commerce_order->collectAdjustments() as $key => $adjustment) {
+    foreach ($commerce_order->collectAdjustments() as $adjustment) {
       if (!empty($adjustment)) {
         $amount = $adjustment->getAmount();
         $formatted_amount = $currency_formatter->format($amount->getNumber(), $amount->getCurrencyCode());
@@ -171,30 +170,24 @@ class PrintController extends ControllerBase {
     // Officially, send the email.
     $result = $mail_manager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 
-    $message_type = 'status';
     // If there was a problem sending the email.
     if ($result['result'] !== TRUE) {
       $message = $this->t('There was a problem sending the email to @mail.', [
         '@mail' => $commerce_order->getEmail(),
       ]);
-      $message_type = 'error';
-    }
-    // Else, if it was successful.
-    else {
-      $message = $this->t('An email with the receipt has been successfully sent to @mail.', [
-        '@mail' => $commerce_order->getEmail(),
-      ]);
+
+      drupal_set_message($message, 'error');
+      \Drupal::logger('commerce_pos_receipt')->error($message);
+
+      return;
     }
 
-    // Display a message to the user regarding the result of sending the mail.
-    drupal_set_message($message, $message_type);
-    // Log the result in the watchdog as well.
-    if ($message_type == 'error') {
-      \Drupal::logger('commerce_pos_receipt')->error($message);
-    }
-    else {
-      \Drupal::logger('commerce_pos_receipt')->notice($message);
-    }
+    $message = $this->t('An email with the receipt has been successfully sent to @mail.', [
+      '@mail' => $commerce_order->getEmail(),
+    ]);
+
+    drupal_set_message($message, 'status');
+    \Drupal::logger('commerce_pos_receipt')->notice($message);
   }
 
   /**

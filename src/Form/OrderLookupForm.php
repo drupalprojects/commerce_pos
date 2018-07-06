@@ -140,25 +140,20 @@ class OrderLookupForm extends FormBase {
     // If we've got results, let's output the details in a table.
     if (!empty($result)) {
       $orders = Order::loadMultiple($result);
-      $order_markup = $this->buildOrderTable($orders);
-    }
-    else {
-      if ($search_text) {
-        $order_markup = $this->t('The order could not be found or does not exist.');
-      }
-      elseif ($empty_message) {
-        $order_markup = $empty_message;
-      }
-      else {
-        $order_markup = $this->t('There are currently no POS orders.');
-        // Convert into something renderable.
-        $order_markup = [
-          '#markup' => $order_markup,
-        ];
-      }
+      return $this->buildOrderTable($orders);
     }
 
-    return $order_markup;
+    if ($search_text) {
+      return $this->t('The order could not be found or does not exist.');
+    }
+
+    if ($empty_message) {
+      return $empty_message;
+    }
+
+    $order_markup = $this->t('There are currently no POS orders.');
+    // Convert into something renderable.
+    return ['#markup' => $order_markup];
   }
 
   /**

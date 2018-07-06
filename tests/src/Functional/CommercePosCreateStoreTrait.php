@@ -22,11 +22,15 @@ trait CommercePosCreateStoreTrait {
   use StoreCreationTrait;
 
   /**
+   * A default store for testing with.
+   *
    * @var \Drupal\commerce_store\Entity\StoreInterface
    */
   protected $store;
 
   /**
+   * A default register for testing with.
+   *
    * @var \Drupal\commerce_pos\Entity\RegisterInterface
    */
   protected $register;

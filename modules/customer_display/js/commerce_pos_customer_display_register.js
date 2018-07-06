@@ -21,6 +21,11 @@
         var to_pay = {};
         var change = {};
 
+        var message = {
+            'register_id': drupalSettings.commercePOSCustomerDisplayRegisterId,
+            'type': 'update'
+        }
+
         $('.commerce-pos--totals--totals tr').each(function () {
             var total = {
                 'label': $(this).find('td:nth-child(1)').text(),
@@ -66,17 +71,7 @@
             'change': change
         };
 
-        var message = {
-            'register_id': drupalSettings.commercePOSCustomerDisplayRegisterId,
-            'display_totals': display_totals
-        };
-
-        if(conn.readyState === conn.OPEN) {
-            conn.send(JSON.stringify(message));
-        }
-        else if (conn.readyState === conn.CLOSED) {
-            conn.connect();
-        }
+        message.display_totals = display_totals;
 
         var items = [];
 
@@ -100,10 +95,7 @@
             }
         });
 
-        message = {
-            'register_id': drupalSettings.commercePOSCustomerDisplayRegisterId,
-            'display_items': items
-        };
+        message.display_items = items;
 
         if (conn.readyState === conn.OPEN) {
             conn.send(JSON.stringify(message));

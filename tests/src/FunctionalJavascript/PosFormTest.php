@@ -38,7 +38,6 @@ class PosFormTest extends JavascriptTestBase {
 
     $this->setUpStore();
 
-    // @todo work out the expected permissions to view products etc...
     $this->drupalLogin($this->rootUser);
   }
 

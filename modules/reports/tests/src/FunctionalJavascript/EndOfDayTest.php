@@ -126,7 +126,7 @@ class EndOfDayTest extends JavascriptTestBase {
       // Casting the xpath element to a string gets us the element's inner HTML.
       $expected_amount = (string) $expected_amount_element[0]->getText();
 
-      $this->assertSame($expected_amount, $totals['amount_total_formatted'], FALSE, 'Expected amount for' . $payment_method . ' is correct.');
+      $this->assertSame($expected_amount, $totals['amount_total_formatted']);
     }
   }
 

@@ -202,7 +202,7 @@ class POSForm extends ContentEntityForm {
   /**
    * Build the payment form, this is the second and final step of a POS order.
    */
-  public function buildPaymentForm(array $form, FormStateinterface $form_state) {
+  protected function buildPaymentForm(array $form, FormStateinterface $form_state) {
     /* @var \Drupal\commerce_order\Entity\Order $order */
     $order = $this->entity;
     $wrapper_id = 'commerce-pos-pay-form-wrapper';
@@ -265,8 +265,6 @@ class POSForm extends ContentEntityForm {
     }
 
     if (!empty($triggering_element['#payment_option_id']) && !$balance_paid) {
-      $option_id = $triggering_element['#payment_option_id'];
-
       $currency_formatter = \Drupal::service('commerce_price.currency_formatter');
       $order_balance_amount_format = $currency_formatter->format($order_balance->getNumber(), $order_balance->getCurrencyCode());
       $keypad_amount = preg_replace('/[^0-9\.,]/', '', $order_balance_amount_format);
@@ -389,7 +387,7 @@ class POSForm extends ContentEntityForm {
   /**
    * Adds a commerce log to an order.
    */
-  public function saveOrderComment(array &$form, FormStateInterface $form_state) {
+  protected function saveOrderComment(array &$form, FormStateInterface $form_state) {
     $order = $this->entity;
 
     $comment = $form_state->getValue([
@@ -426,7 +424,7 @@ class POSForm extends ContentEntityForm {
   /**
    * Defines displayOrderComment helper function.
    */
-  public function displayOrderComment() {
+  protected function displayOrderComment() {
     // Get the default commerce log view.
     $view = Views::getView('commerce_activity');
     /* @var \Drupal\commerce_order\Entity\Order $order */
@@ -580,11 +578,12 @@ class POSForm extends ContentEntityForm {
 
     // Get the payment id from the triggering element.
     $payment_id = $triggering_element['#payment_id'];
-    $payment_gateway_id = $triggering_element['#payment_gateway_id'];
+
     /** @var \Drupal\commerce_payment\Entity\Payment $payment */
     $payment = $payments[$payment_id];
     /** @var \Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\Manual $payment_gateway */
     $plugin_manager = \Drupal::service('plugin.manager.commerce_payment_gateway');
+
     // Right now all the payment methods are manual, we'll have to change this
     // up once we want to support integrated payment methods.
     $payment_gateway = $plugin_manager->createInstance('manual');
@@ -872,7 +871,7 @@ class POSForm extends ContentEntityForm {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   Form state object.
    */
-  public function validateParkOrder(array &$form, FormStateInterface $form_state) {
+  protected function validateParkOrder(array &$form, FormStateInterface $form_state) {
     if (empty($this->entity->getItems())) {
       $form_state->setError($form, $this->t('Cannot park an empty order'));
     }

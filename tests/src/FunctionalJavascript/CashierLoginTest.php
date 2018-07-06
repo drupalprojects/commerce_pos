@@ -16,6 +16,8 @@ class CashierLoginTest extends JavascriptTestBase {
   use CommercePosCreateStoreTrait;
 
   /**
+   * A user with the cashier permissions for testing.
+   *
    * @var \Drupal\user\Entity\User
    */
   protected $cashier;

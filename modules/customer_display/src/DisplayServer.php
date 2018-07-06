@@ -36,37 +36,37 @@ class DisplayServer implements MessageComponentInterface {
    */
   public function onMessage(ConnectionInterface $from, $msg) {
     $msg = json_decode($msg);
-
-    if (isset($msg->type) && $msg->type == 'register') {
-      if (isset($msg->cashier)) {
-        $send_message = [
-          'register_id' => $msg->register_id,
-          'type' => 'cashier',
-          'cashier' => $msg->cashier,
-        ];
-      }
-
-      foreach ($this->clients as $key => $client) {
-        if ($from === $client) {
-          $client->{"register_id"} = $msg->register_id;
-          $client->{"type"} = isset($msg->display_type) ? $msg->display_type : 'customer';
-
-          if (isset($msg->cashier)) {
-            $client->{"cashier"} = $msg->cashier;
-          }
-        }
-        if (isset($msg->cashier) && $client->register_id == $msg->register_id && $client->type == 'customer') {
-          $client->send(json_encode($send_message));
-        }
-      }
+    if (!isset($msg->type)) {
+      return;
     }
 
-    if (isset($msg->display_items)) {
-      foreach ($this->clients as $client) {
-        if ($client->register_id == $msg->register_id && $client->type == 'customer') {
+    foreach ($this->clients as $client) {
+      if ($msg->type == 'register' && $from === $client) {
+        $client->{"register_id"} = $msg->register_id;
+        $client->{"type"} = $msg->display_type;
+      }
+
+      // If the registers listed don't pair with us, ignore.
+      if ($client->register_id != $msg->register_id) {
+        continue;
+      }
+
+      if ($client->type == 'customer') {
+        if (isset($msg->cashier)) {
+          $send_message = [
+            'register_id' => $msg->register_id,
+            'type' => 'cashier',
+            'cashier' => $msg->cashier,
+          ];
+
+          $client->send(json_encode($send_message));
+        }
+
+        if ($msg->type == 'update') {
           $send_message = [
             'register_id' => $client->register_id,
-            'type' => 'display_items',
+            'type' => 'display',
+            'display_totals' => $msg->display_totals,
             'display_items' => $msg->display_items,
           ];
 
@@ -74,36 +74,22 @@ class DisplayServer implements MessageComponentInterface {
         }
       }
     }
-
-    if (isset($msg->display_totals)) {
-      foreach ($this->clients as $client) {
-        if ($client->register_id == $msg->register_id && $client->type == 'customer') {
-          $send_message = [
-            'register_id' => $client->register_id,
-            'type' => 'display_totals',
-            'display_totals' => $msg->display_totals,
-          ];
-
-          $client->send(json_encode($send_message));
-        }
-      }
-    }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function onClose(ConnectionInterface $conn) {
-    $this->clients->detach($conn);
+  public function onClose(ConnectionInterface $connection) {
+    $this->clients->detach($connection);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function onError(ConnectionInterface $conn, \Exception $e) {
-    trigger_error("An error has occurred: {$e->getMessage()}\n", E_USER_WARNING);
+  public function onError(ConnectionInterface $connection, \Exception $exception) {
+    trigger_error("An error has occurred: {$exception->getMessage()}\n", E_USER_WARNING);
 
-    $conn->close();
+    $connection->close();
   }
 
 }
