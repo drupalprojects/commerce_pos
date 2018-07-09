@@ -196,6 +196,15 @@ class POSForm extends ContentEntityForm {
       '#limit_validation_errors' => [],
     ];
 
+    $form['actions']['clear_order'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('New Order'),
+      '#weight' => 99,
+      '#submit' => ['::submitClearOrder'],
+      '#access' => $this->entity->get('state')->value !== 'draft',
+      '#limit_validation_errors' => [],
+    ];
+
     return $form;
   }
 
@@ -335,7 +344,21 @@ class POSForm extends ContentEntityForm {
     $form['actions']['park_order'] = [
       '#type' => 'submit',
       '#value' => $this->t('Park Order'),
+      '#weight' => 99,
       '#submit' => ['::parkOrder'],
+      '#validate' => ['::validateParkOrder'],
+      // Only draft orders can be parked.
+      '#access' => $this->entity->get('state')->value === 'draft',
+      '#limit_validation_errors' => [],
+    ];
+
+    $form['actions']['clear_order'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('New Order'),
+      '#weight' => 99,
+      '#submit' => ['::submitClearOrder'],
+      '#access' => $this->entity->get('state')->value !== 'draft',
+      '#limit_validation_errors' => [],
     ];
 
     $form['actions']['back'] = [
@@ -861,6 +884,18 @@ class POSForm extends ContentEntityForm {
     $this->clearOrder($form_state);
 
     drupal_set_message($this->t('Order @order_id has been parked', ['@order_id' => $order->id()]));
+  }
+
+  /**
+   * Submit callback for clearing the current and starting a new order.
+   *
+   * @param array $form
+   *   Form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   */
+  public function submitClearOrder(array &$form, FormStateInterface $form_state) {
+    $this->clearOrder($form_state);
   }
 
   /**

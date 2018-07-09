@@ -160,6 +160,24 @@ class PosReturnFormTest extends JavascriptTestBase {
     $web_assert->pageTextContains('Total Paid $100.00');
     $web_assert->pageTextContains('To Pay $0.00');
     $web_assert->pageTextContains('Change $50.00');
+
+    $this->getSession()->getPage()->findButton('Complete Order')->click();
+
+    $web_assert->pageTextNotContains('Total $50.00');
+    $web_assert->pageTextContains('Product Search');
+
+    // Test that we can abandon a return order and go back to a clean order.
+    // Now, click on the 'Order Lookup' tab.
+    $this->drupalGet('admin/commerce/pos/orders');
+
+    // Click on our newly created order's edit button so we can do a return.
+    $web_assert->pageTextContains('edit');
+    $this->getSession()->getPage()->clickLink('edit');
+    $web_assert->pageTextContains('Total $50.00');
+
+    $this->getSession()->getPage()->findButton('New Order')->click();
+    $web_assert->pageTextNotContains('Total $50.00');
+    $web_assert->pageTextContains('Product Search');
   }
 
   /**

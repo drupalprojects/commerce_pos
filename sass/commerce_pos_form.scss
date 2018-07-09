@@ -189,7 +189,8 @@ div[class^="edit-actions"],
       display: inline-block;
     }
   }
-  input[id*="edit-actions-park-order"] {
+  input[id*="edit-actions-park-order"],
+  input[id*="edit-actions-clear-order"] {
     display: block;
     padding: 0;
     min-height: 31px;
