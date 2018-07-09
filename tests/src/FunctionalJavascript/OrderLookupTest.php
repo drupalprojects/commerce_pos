@@ -59,8 +59,6 @@ class OrderLookupTest extends JavascriptTestBase {
     $this->waitForAjaxToFinish();
     $web_assert->pageTextContains('The order could not be found or does not exist.');
 
-    $web_assert = $this->assertSession();
-
     // Create our test user.
     $user = User::create();
     $user->setPassword('test');
@@ -88,10 +86,10 @@ class OrderLookupTest extends JavascriptTestBase {
     $this->getSession()->getPage()->fillField('search_box', $order->id());
     $this->waitForAjaxToFinish();
 
-    $web_assert->elementContains('css', '#order-lookup-results > div > table > tbody > tr > td:nth-child(1) > a', $order->id());
-    $web_assert->elementContains('css', '#order-lookup-results > div > table > tbody > tr:nth-child(1) > td:nth-child(5) > a', 'test');
-    $web_assert->elementContains('css', '#order-lookup-results > div > table > tbody > tr > td:nth-child(6)', 'test2@test.com');
-    $web_assert->elementContains('css', '#order-lookup-results > div > table > tbody > tr > td:nth-child(3)', 'Completed');
+    $web_assert->elementContains('css', '#order-lookup-results > table > tbody > tr > td:nth-child(1) > a', $order->id());
+    $web_assert->elementContains('css', '#order-lookup-results > table > tbody > tr:nth-child(1) > td:nth-child(5) > a', 'test');
+    $web_assert->elementContains('css', '#order-lookup-results > table > tbody > tr > td:nth-child(6)', 'test2@test.com');
+    $web_assert->elementContains('css', '#order-lookup-results > table > tbody > tr > td:nth-child(3)', 'Completed');
   }
 
   /**
