@@ -84,7 +84,7 @@ class POS extends ControllerBase {
     if (empty($register) || !$register->isOpen()) {
       // If we're opening a new register, clear our current order. If it exists
       // we don't want to pick up an older order at this point.
-      $this->tempStore->set('current_order_id', FALSE);
+      $this->tempStore->set(self::CURRENT_ORDER_KEY, FALSE);
 
       return $this->formBuilder()->getForm('\Drupal\commerce_pos\Form\RegisterSelectForm');
     }
@@ -93,13 +93,13 @@ class POS extends ControllerBase {
 
     // If no order has been passed through and we have a current order ID. Check
     // the validity of the current order.
-    $current_order_id = $this->tempStore->get('current_order_id');
+    $current_order_id = $this->tempStore->get(self::CURRENT_ORDER_KEY);
     if (!$commerce_order && $current_order_id) {
       $commerce_order = Order::load($current_order_id);
     }
 
     if ($commerce_order && !$commerce_order->hasField('field_cashier') && !$commerce_order->hasField('field_register')) {
-      \Drupal::messenger()->addError($this->t('The order you tried to load is not compatible with the POS, 
+      \Drupal::messenger()->addError($this->t('The order you tried to load is not compatible with the POS,
       it must have a cashier and a register field'));
     }
 
@@ -123,7 +123,7 @@ class POS extends ControllerBase {
 
     // Store the current order ID in the private store so that a cashier can
     // easily return to the same order.
-    $this->tempStore->set('current_order_id', $commerce_order->id());
+    $this->tempStore->set(self::CURRENT_ORDER_KEY, $commerce_order->id());
 
     $form_object = POSForm::create($this->container);
     $form_object->setEntity($commerce_order);
