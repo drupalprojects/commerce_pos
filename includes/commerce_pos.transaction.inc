@@ -430,7 +430,6 @@ function commerce_pos_transaction_form($form, &$form_state) {
     'phone' => array(
       '#type' => 'textfield',
       '#title' => t('Phone Number'),
-      '#suffix' => '</div>',
       '#element_key' => 'customer-update',
       '#description' => t('Record the customers phone number'),
       '#attributes' => array(
@@ -438,6 +437,14 @@ function commerce_pos_transaction_form($form, &$form_state) {
       ),
       '#default_value' => !empty($transaction->data['customer phone']) ? $transaction->data['customer phone'] : NULL,
     ),
+    'print_customer_name' => array(
+      '#type' => 'checkbox',
+      '#title' => 'Print Customer Name',
+      '#suffix' => '</div>',
+      '#element-key' => 'customer-update',
+      '#description' => t('Should the customer name be printed on the receipt'),
+      '#default_value' => 1,
+    )
   );
 
   if (!$has_active_transaction) {
@@ -703,7 +710,7 @@ function commerce_pos_transaction_pay_submit($form, &$form_state) {
   if (!empty($form_state['values']['transaction_options']['customer'])) {
     // Attempt to associate the transaction with a customer.
     $email_address = $form_state['values']['transaction_options']['customer']['email'];
-
+    $form_state['transaction']->data['customer printname'] = $form_state['values']['transaction_options']['customer']['print_customer_name'];
     // Pass the phone number along to the payment form.
     if (isset($form_state['values']['transaction_options']['customer']['phone'])) {
       $form_state['transaction']->data['customer phone'] = $form_state['values']['transaction_options']['customer']['phone'];

@@ -214,4 +214,12 @@ function commerce_pos_report_preprocess_commerce_pos_report_order_details(&$vari
   else {
     $variables['customer'] = t('Anonymous');
   }
+
+  // Print customer name only if this flag passes
+  if (!empty($transaction->data['customer printname']) && $transaction->data['customer printname']) {
+    $variables['printCustomerName'] = TRUE;
+  } else {
+    $variables['printCustomerName'] = FALSE;
+  }
+
 }

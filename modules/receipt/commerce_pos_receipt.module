@@ -25,7 +25,7 @@ function commerce_pos_receipt_theme($existing, $type, $theme, $path) {
       'variables' => array(
         'order' => NULL,
         'type' => NULL,
-        'transacton' => NULL,
+        'transaction' => NULL,
       ),
     ),
     'commerce_pos_receipt_payments_table' => array(
