@@ -11,7 +11,7 @@ commerce_pos_receipt.ajax:
       print_or_email:
         type: 'String'
   requirements:
-    _permission: 'administer commerce_order'
+    _permission: 'access commerce pos pages'
 
 commerce_pos_receipt.show:
   path: '/admin/commerce/pos/{commerce_order}/show-receipt'

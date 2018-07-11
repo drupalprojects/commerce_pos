@@ -200,7 +200,7 @@ class PrintController extends ControllerBase {
    *   The access result.
    */
   public function checkAccess(OrderInterface $commerce_order) {
-    return AccessResult::allowedIf($this->currentUser()->hasPermission('administer commerce_order') && $commerce_order->getPlacedTime())->cachePerPermissions()->cacheUntilEntityChanges($commerce_order);
+    return AccessResult::allowedIf($this->currentUser()->hasPermission('access commerce pos pages') && $commerce_order->getPlacedTime())->cachePerPermissions()->cacheUntilEntityChanges($commerce_order);
   }
 
 }
