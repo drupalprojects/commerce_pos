@@ -27,19 +27,18 @@ class CloseRegister extends ControllerBase {
   public function content() {
     if ($this->moduleHandler()->moduleExists('commerce_pos_reports')) {
       $redirect_url = Url::fromRoute('commerce_pos_reports.end-of-day');
-    }
-    else {
-      $register = \Drupal::service('commerce_pos.current_register')->get();
-      $register->close();
-      $register->save();
-
-      drupal_set_message($this->t('Register @register has been closed.', [
-        '@register' => $register->label(),
-      ]));
-
-      $redirect_url = Url::fromRoute('commerce_pos.main');
+      return new RedirectResponse($redirect_url->toString());
     }
 
+    $register = \Drupal::service('commerce_pos.current_register')->get();
+    $register->close();
+    $register->save();
+
+    drupal_set_message($this->t('Register @register has been closed.', [
+      '@register' => $register->label(),
+    ]));
+
+    $redirect_url = Url::fromRoute('commerce_pos.main');
     return new RedirectResponse($redirect_url->toString());
   }
 

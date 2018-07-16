@@ -69,12 +69,6 @@ function commerce_pos_user_log_form_submit(&$form, FormStateInterface $form_stat
 function commerce_pos_form_commerce_product_type_form_alter(array &$form, FormStateInterface $form_state) {
   $product_type = $form_state->getFormObject()->getEntity();
   $show_in_pos = $product_type->getThirdPartySetting('commerce_pos', 'show_in_pos', TRUE);
-  if ($show_in_pos) {
-    $show_in_pos = 'show';
-  }
-  else {
-    $show_in_pos = 'hide';
-  }
 
   $form['commerce_pos'] = [
     '#type' => 'details',
@@ -87,7 +81,7 @@ function commerce_pos_form_commerce_product_type_form_alter(array &$form, FormSt
     '#type' => 'radios',
     '#title' => 'Show in POS',
     '#options' => ['show' => 'Show', 'hide' => 'Hide'],
-    '#default_value' => $show_in_pos,
+    '#default_value' => !empty($show_in_pos) ? 'show' : 'hide',
   ];
 
   $form['actions']['submit']['#submit'][] = 'commerce_pos_product_type_form_submit';

@@ -187,85 +187,86 @@ class PosCustomerWidget extends WidgetBase implements WidgetInterface, Container
         ],
         '#limit_validation_errors' => [],
       ];
+
+      return ['target_id' => $element];
     }
-    // Else, if no customer has been set for the order.
+
+    // No customer has been set for the order.
+    $selected_customer_type = $form_state->getValue([
+      'uid',
+      '0',
+      'target_id',
+      'order_customer',
+      'customer_type',
+    ], 'existing');
+
+    $element['order_customer']['customer_type'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Order for'),
+      '#title_display' => 'invisible',
+      '#attributes' => [
+        'class' => ['container-inline'],
+      ],
+      '#required' => TRUE,
+      '#options' => [
+        'existing' => $this->t('Existing customer'),
+        'new' => $this->t('New customer'),
+      ],
+      '#default_value' => $selected_customer_type,
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRefresh'],
+        'wrapper' => $wrapper_id,
+      ],
+      '#limit_validation_errors' => [],
+    ];
+
+    // Add an existing customer.
+    if ($selected_customer_type == 'existing') {
+      $element['order_customer']['user'] = [
+        '#type' => 'textfield',
+        '#size' => $this->getSetting('size'),
+        '#placeholder' => $this->getSetting('placeholder'),
+        '#default_value' => NULL,
+        '#autocomplete_route_name' => 'commerce_pos.pos_customer_widget_autocomplete',
+        '#autocomplete_route_parameters' => [
+          'count' => $this->getSetting('num_results'),
+        ],
+        '#ajax' => [
+          'event' => 'autocompleteclose',
+          'callback' => [$this, 'ajaxRefresh'],
+          'wrapper' => $wrapper_id,
+        ],
+      ];
+    }
+    // Add new customer.
     else {
-      $selected_customer_type = $form_state->getValue([
-        'uid',
-        '0',
-        'target_id',
-        'order_customer',
-        'customer_type',
-      ], 'existing');
-
-      $element['order_customer']['customer_type'] = [
-        '#type' => 'radios',
-        '#title' => $this->t('Order for'),
-        '#title_display' => 'invisible',
-        '#attributes' => [
-          'class' => ['container-inline'],
-        ],
-        '#required' => TRUE,
-        '#options' => [
-          'existing' => $this->t('Existing customer'),
-          'new' => $this->t('New customer'),
-        ],
-        '#default_value' => $selected_customer_type,
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-        ],
-        '#limit_validation_errors' => [],
+      $element['order_customer']['user'] = [
+        '#type' => 'value',
+        '#value' => 0,
       ];
-
-      // Add an existing customer.
-      if ($selected_customer_type == 'existing') {
-        $element['order_customer']['user'] = [
-          '#type' => 'textfield',
-          '#size' => $this->getSetting('size'),
-          '#placeholder' => $this->getSetting('placeholder'),
-          '#default_value' => NULL,
-          '#autocomplete_route_name' => 'commerce_pos.pos_customer_widget_autocomplete',
-          '#autocomplete_route_parameters' => [
-            'count' => $this->getSetting('num_results'),
-          ],
-          '#ajax' => [
-            'event' => 'autocompleteclose',
-            'callback' => [$this, 'ajaxRefresh'],
-            'wrapper' => $wrapper_id,
-          ],
-        ];
-      }
-      // Add new customer.
-      else {
-        $element['order_customer']['user'] = [
-          '#type' => 'value',
-          '#value' => 0,
-        ];
-        $element['order_customer']['email'] = [
-          '#type' => 'email',
-          '#title' => $this->t('Email'),
-          '#size' => $this->getSetting('size'),
-          '#required' => TRUE,
-        ];
-        $element['order_customer']['pos_phone_number'] = [
-          '#type' => 'tel',
-          '#title' => $this->t('Phone'),
-          '#size' => $this->getSetting('size'),
-        ];
-      }
-
-      $element['order_customer']['submit'] = [
-        '#type' => 'button',
-        '#value' => $this->t('Set Customer'),
-        '#name' => 'set-order-customer',
-        '#ajax' => [
-          'callback' => [$this, 'ajaxRefresh'],
-          'wrapper' => $wrapper_id,
-        ],
-        '#limit_validation_errors' => [['uid']],
+      $element['order_customer']['email'] = [
+        '#type' => 'email',
+        '#title' => $this->t('Email'),
+        '#size' => $this->getSetting('size'),
+        '#required' => TRUE,
+      ];
+      $element['order_customer']['pos_phone_number'] = [
+        '#type' => 'tel',
+        '#title' => $this->t('Phone'),
+        '#size' => $this->getSetting('size'),
       ];
     }
+
+    $element['order_customer']['submit'] = [
+      '#type' => 'button',
+      '#value' => $this->t('Set Customer'),
+      '#name' => 'set-order-customer',
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRefresh'],
+        'wrapper' => $wrapper_id,
+      ],
+      '#limit_validation_errors' => [['uid']],
+    ];
 
     return ['target_id' => $element];
   }

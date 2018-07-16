@@ -52,32 +52,25 @@ function commerce_pos_keypad_element_info_alter(&$info) {
  */
 function commerce_pos_keypad_pre_render($element) {
   // Only preprocess items with #commerce_pos_keypad set.
-  if (!empty($element['#commerce_pos_keypad'])) {
-    $element['#attached']['library'][] = 'commerce_pos_keypad/keypad';
-    $element['#attributes']['class'][] = 'commerce-pos-keypad-keypad';
+  if (empty($element['#commerce_pos_keypad'])) {
+    return $element;
+  }
 
-    // Allow 'type' to be optional by providing a default.
-    if (isset($element['#commerce_pos_keypad']['type'])) {
-      switch ($element['#commerce_pos_keypad']['type']) {
-        case 'cash input':
-          $element = commerce_pos_keypad_pre_render_cash_input($element);
-          break;
+  $element['#attached']['library'][] = 'commerce_pos_keypad/keypad';
+  $element['#attributes']['class'][] = 'commerce-pos-keypad-keypad';
 
-        case 'keypad':
-          $element = commerce_pos_keypad_pre_render_keypad($element);
-          break;
+  // Allow 'type' to be optional by providing a default.
+  if (isset($element['#commerce_pos_keypad']['type'])) {
+    switch ($element['#commerce_pos_keypad']['type']) {
+      case 'cash input':
+        return commerce_pos_keypad_pre_render_cash_input($element);
 
-        default:
-          $element = commerce_pos_keypad_pre_render_keypad($element);
-          break;
-      }
-    }
-    else {
-      $element = commerce_pos_keypad_pre_render_keypad($element);
+      case 'keypad':
+        return commerce_pos_keypad_pre_render_keypad($element);
     }
   }
 
-  return $element;
+  return commerce_pos_keypad_pre_render_keypad($element);
 }
 
 /**

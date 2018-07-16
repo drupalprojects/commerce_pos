@@ -76,31 +76,33 @@
             if (result && result.codeResult && result.codeResult.code) {
                 Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
                 Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+
+                return;
+            }
+
+            // Scanning for barcode output.
+            var dots = "";
+            if (throbber < 30) {
+                dots = ".";
+            }
+            else if (throbber < 60) {
+                dots = "..";
             }
             else {
-                var dots = "";
-                if (throbber < 30) {
-                    dots = ".";
-                }
-                else if (throbber < 60) {
-                    dots = "..";
-                }
-                else {
-                    dots = "...";
+                dots = "...";
 
-                }
-                throbber++;
-
-                if (throbber > 90) {
-                    throbber = 0;
-                }
-
-                var text = "Scanning for barcode" + dots;
-
-                drawingCtx.font = "20px sans-serif";
-                drawingCtx.fillStyle = "white";
-                drawingCtx.fillText(text, 10, height - 15);
             }
+            throbber++;
+
+            if (throbber > 90) {
+                throbber = 0;
+            }
+
+            var text = "Scanning for barcode" + dots;
+
+            drawingCtx.font = "20px sans-serif";
+            drawingCtx.fillStyle = "white";
+            drawingCtx.fillText(text, 10, height - 15);
         }
     });
 

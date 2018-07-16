@@ -105,14 +105,17 @@ function commerce_pos_label_preprocess_commerce_pos_label(&$variables) {
   // Generate a barcode for a label's UPC.
   /** @var \Drupal\commerce_pos_label\BarcodeGenerator $barcodeGenerator */
   $barcodeGenerator = \Drupal::getContainer()->get('commerce_pos_label.barcode_generator');
-  if (!empty($variables['barcode'])) {
-    $barcode = $barcodeGenerator->generate($variables['barcode']);
-    if ($barcode) {
-      $variables['barcode'] = base64_encode($barcode);
-    }
-    else {
-      // If we fail to generate the barcode, omit it.
-      $variables['barcode'] = '';
-    }
+  if (empty($variables['barcode'])) {
+    return;
   }
+
+  $barcode = $barcodeGenerator->generate($variables['barcode']);
+  if ($barcode) {
+    $variables['barcode'] = base64_encode($barcode);
+    return;
+  }
+
+  // If we fail to generate the barcode, omit it.
+  $variables['barcode'] = '';
+  return;
 }

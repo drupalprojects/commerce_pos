@@ -171,6 +171,7 @@ class POSForm extends ContentEntityForm {
     ];
 
     $form['actions']['submit']['#value'] = $this->t('Pay Now');
+    $form['actions']['submit']['#element_key'] = 'pay-now';
 
     // Modify the delete label.
     $form['actions']['delete']['#title'] = $this->t('Void Order');
@@ -423,13 +424,13 @@ class POSForm extends ContentEntityForm {
     $element_value = $triggering_element["#value"];
 
     // Adding another check because order comment not saving for park orders.
-    if (empty($comment && $element_value == 'Park Order')) {
+    if (empty($comment) && $element_value == 'Park Order') {
       $order_comment_user_input = $form_state->getUserInput();
       $comment = $order_comment_user_input['order_comments']['add_order_comment']['order_comment_text'];
     }
     // In order to add a comment to an order it needs to be saved. This should
     // never be the case but this is defensive code.
-    if (isset($comment) && $comment != '') {
+    if (!empty($comment)) {
       if ($order->isNew()) {
         $order->save();
       }
@@ -513,39 +514,39 @@ class POSForm extends ContentEntityForm {
     if ($step == 'order') {
       parent::submitForm($form, $form_state);
       $this->entity->save();
-      if ($triggering_element_key !== 'remove-payment') {
-        $form_state->set('step', 'payment');
-      }
       $form_state->setRebuild(TRUE);
     }
 
-    if ($step == 'payment') {
-      if ($triggering_element_key == 'add-payment') {
+    switch ($triggering_element_key) {
+      case 'pay-now':
+        $form_state->set('step', 'payment');
+        break;
+
+      case 'add-payment':
         $this->submitPayment($form, $form_state);
-        // Save the payment, in case we leave and go to another screen. Missing
-        // a payment would be bad also helps if we're loading it somewhere else,
-        // like for the receipt trickyness.
-        $this->entity->save();
-      }
-      elseif ($triggering_element_key == 'back-to-order') {
+        break;
+
+      case 'back-to-order':
         $form_state->set('step', 'order');
         $form_state->setRebuild(TRUE);
-      }
-      elseif ($triggering_element_key == 'finish-order') {
+        break;
+
+      case 'finish-order':
         $this->finishOrder($form, $form_state);
 
         // Explicitly reroute to the POS page as we might have been editing an
         // order through POS.
         $form_state->setRedirect('commerce_pos.main');
-      }
-    }
+        break;
 
-    if ($triggering_element_key == 'remove-payment') {
-      $this->voidPayment($form, $form_state);
-      // Save the payment, in case we leave and go to another screen. Missing a
-      // payment would be bad also helps if we're loading it somewhere else,
-      // like for the receipt trickyness.
-      $this->entity->save();
+      case 'remove-payment':
+        $this->voidPayment($form, $form_state);
+        // Save the payment, in case we leave and go to another screen. Missing a
+        // payment would be bad also helps if we're loading it somewhere else,
+        // like for the receipt trickyness.
+        $this->entity->save();
+        $form_state->setRebuild(TRUE);
+        break;
     }
 
     $this->saveOrderComment($form, $form_state);
@@ -580,6 +581,9 @@ class POSForm extends ContentEntityForm {
     $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
     $payment = $payment_storage->create($values);
     $payment->save();
+
+    $this->entity->save();
+
     $form_state->setRebuild(TRUE);
   }
 

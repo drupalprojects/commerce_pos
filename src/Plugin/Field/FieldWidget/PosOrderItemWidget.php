@@ -351,9 +351,9 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
     // as a return item, if it's not already a return item.
     $initial_items_on_order = $this->initial_items_on_order;
     $order_item_newly_added = !isset($initial_items_on_order[$order_item->id()]) ? TRUE : FALSE;
-    $is_return_for_order_item = $order_item->getData('return_for_order_item');
+    $is_return_order_item = $order_item->getData('return_for_order_item');
 
-    if (!$is_return_for_order_item && $order_item_newly_added) {
+    if (!$is_return_order_item && $order_item_newly_added) {
       $form['set_order_item_as_return'] = [
         '#type' => 'checkbox',
         '#name' => 'set_order_item_as_return_' . $order_item->id(),
@@ -369,10 +369,13 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
         '#default_value' => $order_item->type->getValue()[0]['target_id'] == 'return' ? TRUE : FALSE,
         '#limit_validation_errors' => [],
       ];
+
+      return $form;
     }
+
     // If we're editing an order, add a 'return' button next to
     // each item.
-    elseif ($this->is_edit_order && $order_item->type->getValue()[0]['target_id'] != 'return') {
+    if ($this->is_edit_order && $order_item->type->getValue()[0]['target_id'] != 'return') {
       $form['return_order_item'] = [
         '#type' => 'button',
         '#name' => 'return_order_item_' . $order_item->id(),
@@ -387,15 +390,14 @@ class PosOrderItemWidget extends WidgetBase implements WidgetInterface, Containe
         '#order_item_id' => $order_item->id(),
         '#limit_validation_errors' => [],
       ];
+
+      return $form;
     }
-    // Else, we just add an empty row so the rows don't look ugly when the
-    // return buttons are missing.
-    else {
-      $form['empty_row'] = [
-        '#type' => 'item',
-        '#markup' => '',
-      ];
-    }
+
+    $form['empty_row'] = [
+      '#type' => 'item',
+      '#markup' => '',
+    ];
 
     return $form;
   }

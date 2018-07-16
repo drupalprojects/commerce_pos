@@ -116,6 +116,11 @@ class PosOrderItemAutoComplete extends ControllerBase {
 
       $index = Index::load($config->get('product_search_index'));
 
+      if (!isset($index)) {
+        drupal_set_message($this->t('You must configure a Search API index to search against'));
+        return NULL;
+      }
+
       $query = $index->query();
 
       $parse_mode = \Drupal::service('plugin.manager.search_api.parse_mode')
