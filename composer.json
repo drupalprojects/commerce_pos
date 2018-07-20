@@ -11,8 +11,8 @@
     "source": "http://cgit.drupalcode.org/commerce_pos"
   },
   "require": {
-    "drupal/commerce": "~2.7",
-    "drupal/search_api": "~1.0",
+    "drupal/commerce": "~2.8",
+    "drupal/search_api": "~1.9",
     "picqer/php-barcode-generator": "^0.2.2",
     "cboden/ratchet": "^0.4.1"
   }
