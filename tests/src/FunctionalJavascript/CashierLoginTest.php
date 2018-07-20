@@ -70,6 +70,14 @@ class CashierLoginTest extends JavascriptTestBase {
     $main_url = Url::fromRoute('commerce_pos.main');
     $this->assertEquals($this->getAbsoluteUrl($main_url->toString()),
       $this->getUrl());
+
+    $this->drupalLogout();
+    // Due to https://www.drupal.org/project/commerce_pos/issues/2986152 we have
+    // to clear the cache to test that the login page has the user's name in the
+    // recently-logged-in users.
+    drupal_flush_all_caches();
+    $this->drupalGet($login_url);
+    $this->assertSession()->pageTextContains($this->cashier->getUsername());
   }
 
   /**

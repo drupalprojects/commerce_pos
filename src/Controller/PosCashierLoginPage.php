@@ -16,20 +16,8 @@ class PosCashierLoginPage extends ControllerBase {
    *   A simple renderable array.
    */
   public function login() {
-    if (isset($_COOKIE['commerce_pos_cashiers'])) {
-      $cashiers = unserialize($_COOKIE['commerce_pos_cashiers']);
-
-      usort($cashiers, function ($a, $b) {
-        return $a['timestamp'] - $b['timestamp'];
-      });
-
-      $cashiers = array_slice($cashiers, 0, 10);
-      setcookie('commerce_pos_cashiers', serialize($cashiers),
-        time() + 31557600, '/');
-    }
-    else {
-      $cashiers = NULL;
-    }
+    /** @var \Drupal\commerce_pos\RecentCashiers $recent_cashiers */
+    $recent_cashiers = \Drupal::service('commerce_pos.recent_cashiers');
 
     /* @var $register \Drupal\commerce_pos\Entity\Register */
     $register = \Drupal::service('commerce_pos.current_register')->get();
@@ -53,7 +41,7 @@ class PosCashierLoginPage extends ControllerBase {
       '#type' => 'page',
       '#theme' => 'commerce_pos_cashier_login_page',
       '#form' => \Drupal::formBuilder()->getForm('Drupal\commerce_pos\Form\CashierForm'),
-      '#cashiers' => $cashiers,
+      '#cashiers' => $recent_cashiers->get(),
       '#messages' => $messages,
       '#store_name' => $store->getName(),
     ];

@@ -67,17 +67,9 @@ class POS extends ControllerBase {
    *   A renderable array containing the POS form.
    */
   public function content(Order $commerce_order = NULL) {
-    $cashiers = [];
-    if (isset($_COOKIE['commerce_pos_cashiers'])) {
-      $cashiers = unserialize($_COOKIE['commerce_pos_cashiers']);
-    }
-
-    $cashiers[$this->currentUser()->id()] = [
-      'name' => $this->currentUser()->getAccountName(),
-      'timestamp' => time(),
-    ];
-
-    setcookie('commerce_pos_cashiers', serialize($cashiers), time() + 31557600, '/');
+    /** @var \Drupal\commerce_pos\RecentCashiers $recent_cashiers */
+    $recent_cashiers = \Drupal::service('commerce_pos.recent_cashiers');
+    $recent_cashiers->add();
 
     $register = \Drupal::service('commerce_pos.current_register')->get();
 

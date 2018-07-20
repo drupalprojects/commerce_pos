@@ -17,3 +17,6 @@ services:
     class: Drupal\commerce_pos\EventSubscriber\CustomerProfileSubscriber
     tags:
       - { name: event_subscriber }
+
+  commerce_pos.recent_cashiers:
+    class: Drupal\commerce_pos\RecentCashiers
