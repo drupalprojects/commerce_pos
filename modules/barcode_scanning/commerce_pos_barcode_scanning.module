@@ -6,6 +6,31 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function commerce_pos_barcode_scanning_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the commerce_pos module.
+    case 'help.page.commerce_pos_barcode_scanning':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Commerce POS Barcode Scanning provides the ability to use a camera or other scanner to input product SKUs into the product search bar on the register interface.') . '</p>';
+      $output .= '<p>' . t('This submodule does require an external JavaScript library.') . '</p>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('Download the latest release from the <a href="https://github.com/serratus/quaggaJS/">quagga GitHub Page</a>.') . '</li>';
+      $output .= '<li>' . t('Extract the minified library from the dist folder.') . '</li>';
+      $output .= '<li>' . t('Place quagga.min.js in webroot/libraries/quagga/ (it should look like webroot/libraries/quagga/quagga.min.js).') . '</li>';
+      $output .= '<li>' . t('It is also highly recommended you install the <a href="https://github.com/webrtc/adapter">WebRTC adapter</a> library as well for quagga.') . '</li>';
+      $output .= '<li>' . t('Simply extract adapter.js from the release folder to webroot/libraries/adapter (should look like webroot/libraries/adapter/adapter.js).') . '</li>';
+      $output .= '</ul>';
+      return $output;
+
+    default:
+  }
+}
 
 /**
  * Implements hook_form_FORM_ID_alter() for form changing.
@@ -14,6 +39,13 @@ function commerce_pos_barcode_scanning_form_commerce_pos_alter(&$form, FormState
   if ($form_state->get('step') == 'order') {
     $form['#attached']['library'][] = 'commerce_pos_barcode_scanning/quagga';
     $form['#attached']['library'][] = 'commerce_pos_barcode_scanning/form';
+
+    if (!file_exists('libraries/quagga/quagga.min.js')) {
+      $messenger = \Drupal::messenger();
+      $messenger->addWarning(t('You don\'t have the quagga library, so barcode scanning won\'t work. <a href="@help_link">Learn More</a>', [
+        '@help_link' => '/admin/help/commerce_pos_barcode_scanning'
+      ]));
+    }
 
     $config = \Drupal::configFactory()->getEditable('commerce_pos_barcode_scanning.settings');
 

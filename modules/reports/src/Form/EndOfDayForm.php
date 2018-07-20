@@ -32,6 +32,13 @@ class EndOfDayForm extends FormBase {
     $form['#attached']['library'][] = 'commerce_pos_reports/reports';
     $form['#attached']['library'][] = 'commerce_pos_print/jQuery.print';
 
+    if (!file_exists('libraries/jQuery.print/jQuery.print.js')) {
+      $messenger = \Drupal::messenger();
+      $messenger->addWarning(t('You don\'t have the jQuery.print library, so printing won\'t work. <a href="@help_link">Learn More</a>', [
+        '@help_link' => '/admin/help/commerce_pos_print'
+      ]));
+    }
+
     $handler = \Drupal::service('module_handler');
     $path = $handler->getModule('commerce_pos_reports')->getPath();
     $js_settings = [

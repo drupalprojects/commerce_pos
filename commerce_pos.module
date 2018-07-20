@@ -17,7 +17,27 @@ function commerce_pos_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.commerce_pos':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Commerce Point of Sale') . '</p>';
+      $output .= '<p>' . t('Commerce Point of Sale provides several useful interfaces and submodules for operating a store\'s POS system directly in Drupal.') . '</p>';
+      $output .= '<p>' . t('It includes a cashier login system, touch-friendly registers, is fully integrated into Commerce POS, and has Search API support.') . '</p>';
+      $output .= '<h4>' . t('Included Submodules') . '</h4>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Commerce POS Barcode Scanning') . '</dt>';
+      $output .= '<dd>' . t('Provides the ability to use a camera or other scanner to read barcodes for the POS register interface.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Currency Denominations') . '</dt>';
+      $output .= '<dd>' . t('Allows you to configure currency denominations.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Customer Display') . '</dt>';
+      $output .= '<dd>' . t('<b>Experimental</b> Enables a customer facing display that updates in real time.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Keypad') . '</dt>';
+      $output .= '<dd>' . t('Implements a touch-friendly keypad into the register payment interface.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Labels') . '</dt>';
+      $output .= '<dd>' . t('Adds the ability to generate and print custom product labels for POS items.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Print') . '</dt>';
+      $output .= '<dd>' . t('Gives other modules the ability to print.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Receipt') . '</dt>';
+      $output .= '<dd>' . t('Allows POS to generate and print a receipt for a customer.') . '</dd>';
+      $output .= '<dt>' . t('Commerce POS Reports') . '</dt>';
+      $output .= '<dd>' . t('Provides a simple interface for viewing reports from POS registers.') . '</dd>';
+      $output .= '</dl>';
       return $output;
 
     default:
